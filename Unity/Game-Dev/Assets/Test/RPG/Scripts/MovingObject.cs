@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Game;
 
 [RequireComponent(typeof(Collider2D))]
@@ -21,5 +19,11 @@ public class MovingObject : MonoBehaviour
     {
         Vector2 displacement = heading.v2 * movementSpeed * Time.deltaTime;
         rb.MovePosition(rb.position + displacement);       
+    }
+
+    protected virtual void Move(float speed) // redundancy
+    {
+        Vector2 displacement = heading.v2 * speed * Time.deltaTime;
+        rb.MovePosition(rb.position + displacement);
     }
 }

@@ -1,19 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game
 {
     public class Player : MovingObject
-    {     
-        private Animator ar;
-        private Coroutine inst = null;
+    {
+        private AnimatorStateMachine stateMachine;
+        private Vector2 input;
+
+        private void Awake()
+        {
+            stateMachine = GetComponent<AnimatorStateMachine>();
+            stateMachine.EnterStateAction = EnterStateAction;
+            stateMachine.ContinueStateAction = ContinueStateAction;
+        }
 
         private new void Start()
         {
-            base.Start();
-            ar = GetComponent<Animator>();
-            ar.Play("Idle");
+            base.Start();    
         }
 
         private void Update()
@@ -23,7 +26,7 @@ namespace Game
 
         private void ReadInput()
         {
-            Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
             if (input.magnitude >= 0.1F)
             {
@@ -33,55 +36,77 @@ namespace Game
                 Debug.DrawRay(pos, input.normalized, Color.red, Time.deltaTime);
                 Debug.DrawRay(pos, heading.v2, Color.blue, Time.deltaTime);
 
-                ar.SetFloat("FaceX", heading.v2.x);
-                ar.SetFloat("FaceY", heading.v2.y);
+                stateMachine.animator.SetFloat("FaceX", heading.v2.x);
+                stateMachine.animator.SetFloat("FaceY", heading.v2.y);
+            }
+        }
 
-                if (input.magnitude >= 0.7F)
-                {
-                    if (Input.GetButton("B"))
+        #region Animator State Machine Actions
+        private void EnterStateAction(State state)
+        {
+            switch (state)
+            {
+                case State.Idle:
+                    stateMachine.animator.Play(StateNames.IdleAnim);
+                    break;
+                case State.Walking:
+                    stateMachine.animator.Play(StateNames.WalkAnim);
+                    Move();
+                    break;
+                case State.Running:
+                    stateMachine.animator.Play(StateNames.WalkAnim); // different anim later
+                    stateMachine.animator.speed = 2.0F; // different anim later
+                    Move(2.0F);
+                    break;
+            }
+        }
+
+        private void ContinueStateAction(State state)
+        {
+            switch (state)
+            {
+                case State.Idle:
+                    if (input.magnitude >= 0.7F)
                     {
-                        ar.Play("Roll");
-                        movementSpeed = 1.5F;
+                        stateMachine.EnterState(Input.GetButton("B") ? State.Running : State.Walking);
+                    }
+                    break;
+                case State.Walking:
+                    if (input.magnitude >= 0.7F)
+                    {
+                        Move();
+
+                        if (Input.GetButton("B"))
+                        {
+                            stateMachine.EnterState(State.Running);
+                        }
                     }
 
                     else
                     {
-                        ar.Play("Walk");
-                        movementSpeed = 1.0F;
+                        stateMachine.EnterState(State.Idle);
                     }
-                    
-                    Move();
-                }
+                    break;
+                case State.Running:
+                    if (input.magnitude >= 0.7F)
+                    {
+                        Move(2.0F);
 
-                else if (!ar.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-                {
-                    ar.Play("Idle");
-                }
-            }
+                        if (Input.GetButtonUp("B"))
+                        {
+                            stateMachine.animator.speed = 1.0F; // delete later
+                            stateMachine.EnterState(State.Walking);
+                        }
+                    }
 
-            else if (!ar.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                ar.Play("Idle");
+                    else
+                    {
+                        stateMachine.animator.speed = 1.0F; // delete later
+                        stateMachine.EnterState(State.Idle);
+                    }
+                    break;
             }
         }
-
-        private IEnumerator OneTimeAnim(string stateName)
-        {
-            ar.Play(stateName);
-
-            while (!ar.GetCurrentAnimatorStateInfo(0).IsName(stateName))
-            {
-                yield return null;
-            }
-
-            float length = ar.GetCurrentAnimatorStateInfo(0).length;
-
-            for (float t = 0.0F; t < length; t += Time.deltaTime)
-            {
-                yield return null;
-            }
-
-            inst = null;
-        }
+        #endregion
     }
 }
