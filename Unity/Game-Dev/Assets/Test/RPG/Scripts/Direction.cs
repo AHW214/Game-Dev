@@ -7,36 +7,35 @@ namespace Game
     {
         public static readonly int amount = 8;
         public static readonly float angleIncrement = 360.0F / amount;
-        public static readonly float halfAngleIncrement = angleIncrement / 2.0F;
+        public static readonly float inverseAngleIncrement = 1 / angleIncrement;
 
-        public readonly Vector2 v2;
+        public readonly Vector2 pixelDirection;
 
-        private static Vector2 GetDir(float inAngle)
+        public Direction(float angle)
         {
-            float floored = (int)(inAngle / angleIncrement) * angleIncrement;
-            float outAngle = inAngle - floored > halfAngleIncrement ? floored + angleIncrement : floored;
+            float rounded = Mathf.Round(angle * inverseAngleIncrement);
+            float snappedAngle = rounded * angleIncrement;
 
-            Vector2 outDir = Quaternion.AngleAxis(outAngle, Vector3.back) * Vector2.up;
-
-            return outDir;
+            Vector2 dir = Quaternion.AngleAxis(snappedAngle, Vector3.back) * Vector2.up;
+            pixelDirection = Vector2Int.RoundToInt(dir);
         }
 
-        public Direction(float inAngle)
+        public Direction(Vector2 dir) : this(GetVectorAngle(dir))
         {
-            v2 = GetDir(inAngle);
+            
         }
-
-        public Direction(Vector2 inDir)
+        
+        private static float GetVectorAngle(Vector2 vector)
         {
-            if (inDir == Vector2.zero)
+            if (vector == Vector2.zero)
             {
                 throw new Exception("Direction cannot be a 0 vector.");
             }
 
-            float acuteAngle = Vector2.Angle(Vector2.up, inDir);
-            float inAngle = inDir.x < 0 ? 360 - acuteAngle : acuteAngle;
+            float acuteAngle = Vector2.Angle(Vector2.up, vector);
+            float angle = vector.x < 0 ? 360 - acuteAngle : acuteAngle;
 
-            v2 = GetDir(inAngle);
-        }           
+            return angle;
+        }
     }
 }

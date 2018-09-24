@@ -33,11 +33,11 @@ namespace Game
                 heading = new Direction(input);
 
                 Vector2 pos = 0.1F * Vector2.up + (Vector2)transform.position;
-                Debug.DrawRay(pos, input.normalized, Color.red, Time.deltaTime);
-                Debug.DrawRay(pos, heading.v2, Color.blue, Time.deltaTime);
+                Debug.DrawRay(pos, 7.0F * input.normalized, Color.red, Time.deltaTime);
+                Debug.DrawRay(pos, 7.0F * heading.pixelDirection.normalized, Color.blue, Time.deltaTime);
 
-                stateMachine.animator.SetFloat("FaceX", heading.v2.x);
-                stateMachine.animator.SetFloat("FaceY", heading.v2.y);
+                stateMachine.animator.SetFloat("FaceX", heading.pixelDirection.x);
+                stateMachine.animator.SetFloat("FaceY", heading.pixelDirection.y);
             }
         }
 
@@ -56,7 +56,7 @@ namespace Game
                 case State.Running:
                     stateMachine.animator.Play(StateNames.WalkAnim); // different anim later
                     stateMachine.animator.speed = 2.0F; // different anim later
-                    Move(2.0F);
+                    Move(14.0F);
                     break;
             }
         }
@@ -90,7 +90,7 @@ namespace Game
                 case State.Running:
                     if (input.magnitude >= 0.7F)
                     {
-                        Move(2.0F);
+                        Move(14.0F);
 
                         if (Input.GetButtonUp("B"))
                         {
