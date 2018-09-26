@@ -1,34 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Platformer
-{
-    [RequireComponent(typeof(BoxCollider2D))]
-    public class Controller2D : MonoBehaviour
-    {
-        public LayerMask collisionMask;
-        public int horizontalRayCount = 4;
-        public int verticalRayCount = 4;
+{ 
+    public class Controller2D : RaycastController
+    {       
         public float maximumClimbAngle = 80.0F;
         public float maximumDescendAngle = 75.0F;
         public bool drawRaycasts = false;
 
         public CollisionInfo collisions;
 
-        private const float skinWidth = 0.015F;
-
-        private float horizontalRaySpacing;
-        private float verticalRaySpacing;
-
-        new private BoxCollider2D collider;
-        private RaycastOrigins raycastOrigins;
-
-        private void Start()
+        protected override void Start()
         {
-            collider = GetComponent<BoxCollider2D>();
-
-            CalculateRaySpacing();
+            base.Start();
         }
 
         private void Update()
@@ -36,7 +20,7 @@ namespace Platformer
 
         }
 
-        public void Move(Vector2 displacement)
+        public void Move(Vector2 displacement, bool standingOnPlatform = false)
         {
             UpdateRaycastOrigins();
             collisions.Reset(displacement);
@@ -57,6 +41,11 @@ namespace Platformer
             }
 
             transform.Translate(displacement);
+
+            if (standingOnPlatform)
+            {
+                collisions.below = true;
+            }
         }
 
         private void HorizontalCollisions(ref Vector2 displacement)
@@ -71,7 +60,7 @@ namespace Platformer
                 Vector2 offsetOrigin = rayOrigin + Vector2.up * (i * horizontalRaySpacing);
                 RaycastHit2D hit = Physics2D.Raycast(offsetOrigin, directionX * Vector2.right, rayLength, collisionMask);
 
-                if (hit)
+                if (hit && hit.distance > 0)
                 {
                     float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 
@@ -213,41 +202,6 @@ namespace Platformer
                     }
                 }
             }
-        }
-
-        private Bounds GetRaycastBounds()
-        {
-            Bounds bounds = collider.bounds;
-            bounds.Expand(-2 * skinWidth);
-
-            return bounds;
-        }
-
-        private void UpdateRaycastOrigins()
-        {
-            Bounds bounds = GetRaycastBounds();
-
-            raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-            raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-            raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
-            raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
-        }
-
-        private void CalculateRaySpacing()
-        {
-            Bounds bounds = GetRaycastBounds();
-
-            horizontalRayCount = Mathf.Max(2, horizontalRayCount);
-            verticalRayCount = Mathf.Max(2, verticalRayCount);
-
-            horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-            verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-        }
-
-        private struct RaycastOrigins
-        {
-            public Vector2 topLeft, topRight;
-            public Vector2 bottomLeft, bottomRight;
         }
 
         public struct CollisionInfo
