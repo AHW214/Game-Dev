@@ -7,7 +7,16 @@ namespace Platformer
     public class PlatformController : RaycastController
     {
         public LayerMask passengerMask;
-        public Vector2 move;
+        public bool cyclicLoop;
+
+        public float speed;
+        public float waitTime;
+
+        [Range(0, 2)]
+        public float easeAmount;
+
+        public Vector2[] localWaypoints;
+        private Vector2[] globalWaypoints;
 
         private List<PassengerMovement> passengerMovement;
         private IDictionary<Transform, Controller2D> passengerDictionary = new Dictionary<Transform, Controller2D>();
@@ -16,21 +25,21 @@ namespace Platformer
         {
             base.Start();
 
+            globalWaypoints = new Vector2[localWaypoints.Length];
+            for (int i = 0; i < localWaypoints.Length; i++)
+            {
+                globalWaypoints[i] = localWaypoints[i] + (Vector2)transform.position;
+            }
+
+            StartCoroutine(WaypointLoop());
         }
 
-        private void Update()
+        private float Ease(float x)
         {
-            UpdateRaycastOrigins();
-
-            Vector2 displacement = move * Time.deltaTime;
-
-            CalculatePassengerMovement(displacement);
-
-            MovePassengers(true);
-            transform.Translate(displacement);
-            MovePassengers(false);
+            float a = easeAmount + 1;
+            return Mathf.Pow(x, a) / (Mathf.Pow(x, a) + Mathf.Pow(1 - x, a));
         }
-
+    
         private void MovePassengers(bool beforeMovePlatform)
         {
             passengerMovement.ForEach((passenger) =>
@@ -122,6 +131,82 @@ namespace Platformer
             }
         }
 
+        private IEnumerator WaypointLoop()
+        {
+            bool movingForward = true;
+
+            while (true)
+            {
+                yield return StartCoroutine(movingForward ? MoveForward() : MoveBack());
+
+                if (cyclicLoop && movingForward)
+                {
+                    yield return StartCoroutine(MoveBetween(globalWaypoints.Length - 1, 0));
+                }
+
+                else if (cyclicLoop && !movingForward)
+                {
+                    yield return StartCoroutine(MoveBetween(0, globalWaypoints.Length - 1));
+                }
+
+                else
+                {
+                    movingForward = !movingForward;
+                }             
+            }
+        }
+
+        private IEnumerator MoveForward()
+        {
+            for (int i = 0; i < globalWaypoints.Length - 1; i++)
+            {
+                yield return StartCoroutine(MoveBetween(i, i + 1));              
+            }
+        }
+
+        private IEnumerator MoveBack()
+        {
+            for (int i = globalWaypoints.Length - 1; i > 0; i--)
+            {
+                yield return StartCoroutine(MoveBetween(i, i - 1));
+            }
+        }
+
+        private IEnumerator MoveBetween(int fromIndex, int toIndex)
+        {
+            Vector2 fromWaypoint = globalWaypoints[fromIndex];
+            Vector2 toWaypoint = globalWaypoints[toIndex];
+
+            float distanceBetweenWaypoints = Vector2.Distance(fromWaypoint, toWaypoint);
+
+            float percentBetweenWaypoints = 0.0F;
+            while (percentBetweenWaypoints < 1)
+            {
+                percentBetweenWaypoints += (speed * Time.deltaTime) / distanceBetweenWaypoints;
+                float easedPercentBetweenWaypoints = Ease(Mathf.Clamp01(percentBetweenWaypoints));
+
+                Vector2 newPos = Vector2.Lerp(fromWaypoint, toWaypoint, easedPercentBetweenWaypoints);
+                Vector2 displacement = newPos - (Vector2)transform.position;
+
+                PassengerRoutine(displacement);
+
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(waitTime);
+        }
+
+        private void PassengerRoutine(Vector2 displacement)
+        {
+            UpdateRaycastOrigins();
+
+            CalculatePassengerMovement(displacement);
+
+            MovePassengers(true);
+            transform.Translate(displacement);
+            MovePassengers(false);
+        }
+
         private struct PassengerMovement
         {
             public Transform transform;
@@ -137,6 +222,22 @@ namespace Platformer
 
                 standingOnPlatform = _standingOnPlatform;
                 moveBeforePlatform = _moveBeforePlatform;
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (localWaypoints != null)
+            {
+                Gizmos.color = Color.red;
+                float size = 0.3F;
+
+                for (int i = 0; i < localWaypoints.Length; i++)
+                {
+                    Vector2 globalWaypointPos = Application.isPlaying ? globalWaypoints[i] : localWaypoints[i] + (Vector2)transform.position;
+                    Gizmos.DrawLine(globalWaypointPos + size * Vector2.down, globalWaypointPos + size * Vector2.up);
+                    Gizmos.DrawLine(globalWaypointPos + size * Vector2.left, globalWaypointPos + size * Vector2.right);
+                }
             }
         }
     }
