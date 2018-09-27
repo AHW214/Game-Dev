@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 namespace Platformer
@@ -7,7 +6,8 @@ namespace Platformer
     [RequireComponent(typeof(Controller2D))]
     public class Player : MonoBehaviour
     {
-        public float jumpHeight = 4.0F;
+        public float maxJumpHeight = 4.0F;
+        public float minJumpHeight = 1.0F;
         public float timeToJumpApex = 0.4F;
         public float accelerationTimeAirborne = 0.2F;
         public float accelerationTimeGrounded = 0.1F;
@@ -21,7 +21,8 @@ namespace Platformer
         public float wallStickTime = 0.25F;
 
         private float gravity;
-        private float jumpSpeed;
+        private float maxJumpVelocity;
+        private float minJumpVelocity;
         private float timeToWallUnstick;
         private float velocityXSmoothing;
         
@@ -32,17 +33,19 @@ namespace Platformer
         {
             controller = GetComponent<Controller2D>();
 
-            gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
-            jumpSpeed = Mathf.Abs(gravity) * timeToJumpApex;
+            gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
 
-            Debug.Log($"Gravity: {gravity}\nJump Speed: {jumpSpeed}");
+            maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+            minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
+
+            Debug.Log($"Gravity: {gravity}\nJump Speed: {maxJumpVelocity}");
         }
 
         private void Update()
         {
             Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-            int inputDirX = (int)Mathf.Sign(input.x);
+            int inputDirX = Math.Sign(input.x);
             int wallDirX = controller.collisions.left ? -1 : 1;
 
             float targetVelocityX = input.x * movementSpeed;
@@ -67,12 +70,7 @@ namespace Platformer
                 {
                     timeToWallUnstick = wallStickTime;
                 }
-            }
-
-            if (controller.collisions.above || controller.collisions.below)
-            {
-                velocity.y = 0;
-            }      
+            }   
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -96,12 +94,22 @@ namespace Platformer
 
                 if (controller.collisions.below)
                 {
-                    velocity.y = jumpSpeed;
+                    velocity.y = maxJumpVelocity;
                 }                  
             }
 
+            else if (Input.GetKeyUp(KeyCode.Space))
+            {
+                velocity.y = Mathf.Min(velocity.y, minJumpVelocity);
+            }
+
             velocity.y += gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
+            controller.Move(velocity * Time.deltaTime, input);
+
+            if (controller.collisions.above || controller.collisions.below)
+            {
+                velocity.y = 0;
+            }
         }
     }
 }

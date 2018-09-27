@@ -74,7 +74,7 @@ namespace Platformer
                     Vector2 offsetOrigin = rayOrigin + Vector2.right * (i * verticalRaySpacing);
                     RaycastHit2D hit = Physics2D.Raycast(offsetOrigin, directionY * Vector2.up, rayLength, passengerMask);
 
-                    if (hit && !movedPassengers.Contains(hit.transform))
+                    if (hit && hit.distance != 0 && !movedPassengers.Contains(hit.transform))
                     {
                         movedPassengers.Add(hit.transform);
 
@@ -96,7 +96,7 @@ namespace Platformer
                     Vector2 offsetOrigin = rayOrigin + Vector2.up * (i * horizontalRaySpacing);
                     RaycastHit2D hit = Physics2D.Raycast(offsetOrigin, directionX * Vector2.right, rayLength, passengerMask);
 
-                    if (hit && !movedPassengers.Contains(hit.transform))
+                    if (hit && hit.distance != 0 && !movedPassengers.Contains(hit.transform))
                     {
                         movedPassengers.Add(hit.transform);
 
@@ -118,7 +118,7 @@ namespace Platformer
                     Vector2 offsetOrigin = rayOrigin + Vector2.right * (i * verticalRaySpacing);
                     RaycastHit2D hit = Physics2D.Raycast(offsetOrigin, Vector2.up, rayLength, passengerMask);
 
-                    if (hit && !movedPassengers.Contains(hit.transform))
+                    if (hit && hit.distance != 0 && !movedPassengers.Contains(hit.transform))
                     {
                         movedPassengers.Add(hit.transform);
 

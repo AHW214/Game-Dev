@@ -8,18 +8,23 @@ namespace Platformer
         public LayerMask collisionMask;
         public int horizontalRayCount = 4;
         public int verticalRayCount = 4;
+        
+        new internal BoxCollider2D collider;
 
         protected const float skinWidth = 0.015F;
 
         protected float horizontalRaySpacing;
         protected float verticalRaySpacing;
 
-        new private BoxCollider2D collider;
         protected RaycastOrigins raycastOrigins;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             collider = GetComponent<BoxCollider2D>();
+        }
+
+        protected virtual void Start()
+        {          
             CalculateRaySpacing();
         }
 

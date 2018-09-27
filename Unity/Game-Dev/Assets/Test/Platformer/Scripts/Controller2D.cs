@@ -9,6 +9,7 @@ namespace Platformer
         public bool drawRaycasts = false;
 
         public CollisionInfo collisions;
+        internal Vector2 playerInput;
 
         protected override void Start()
         {
@@ -21,10 +22,16 @@ namespace Platformer
 
         }
 
-        public void Move(Vector2 displacement, bool standingOnPlatform = false)
+        public void Move(Vector2 displacement, bool standingOnPlatform)
+        {
+            Move(displacement, Vector2.zero, standingOnPlatform);
+        }
+
+        public void Move(Vector2 displacement, Vector2 input, bool standingOnPlatform = false)
         {
             UpdateRaycastOrigins();
             collisions.Reset(displacement);
+            playerInput = input;
 
             if (displacement.x != 0)
             {
@@ -122,6 +129,26 @@ namespace Platformer
 
                 if (hit)
                 {
+                    if (hit.collider.tag == "One Way Platform")
+                    {
+                        if (directionY == 1 || hit.distance == 0)
+                        {
+                            continue;
+                        }
+
+                        if(collisions.fallingThroughPlatform)
+                        {
+                            continue;
+                        }
+
+                        if (playerInput.y == -1)
+                        {
+                            collisions.fallingThroughPlatform = true;
+                            Invoke("ResetFallingThroughPlatform", 0.5F);
+                            continue;
+                        }
+                    }
+
                     displacement.y = directionY * (hit.distance - skinWidth);
                     rayLength = hit.distance;
 
@@ -207,6 +234,11 @@ namespace Platformer
             }
         }
 
+        private void ResetFallingThroughPlatform()
+        {
+            collisions.fallingThroughPlatform = false;
+        }
+
         public struct CollisionInfo
         {
             public bool above, below;
@@ -218,6 +250,8 @@ namespace Platformer
             public Vector2 displacementOld;
 
             public int faceDirection;
+
+            public bool fallingThroughPlatform;
 
             public void Reset(Vector2 displacement)
             {
