@@ -13,6 +13,7 @@ namespace Platformer
         protected override void Start()
         {
             base.Start();
+            collisions.faceDirection = 1;
         }
 
         private void Update()
@@ -25,15 +26,17 @@ namespace Platformer
             UpdateRaycastOrigins();
             collisions.Reset(displacement);
 
+            if (displacement.x != 0)
+            {
+                collisions.faceDirection = (int)Mathf.Sign(displacement.x);
+            }
+
             if (displacement.y < 0)
             {
                 DescendSlope(ref displacement);
             }
 
-            if (displacement.x != 0)
-            {
-                HorizontalCollisions(ref displacement);
-            }
+            HorizontalCollisions(ref displacement);
 
             if (displacement.y != 0)
             {
@@ -50,8 +53,8 @@ namespace Platformer
 
         private void HorizontalCollisions(ref Vector2 displacement)
         {
-            float directionX = Mathf.Sign(displacement.x);
-            float rayLength = Mathf.Abs(displacement.x) + skinWidth;
+            float directionX = collisions.faceDirection;
+            float rayLength = Mathf.Max(Mathf.Abs(displacement.x), skinWidth) + skinWidth;
 
             Vector2 rayOrigin = directionX == -1 ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
 
@@ -213,6 +216,8 @@ namespace Platformer
             public float slopeAngle, slopeAngleOld;
 
             public Vector2 displacementOld;
+
+            public int faceDirection;
 
             public void Reset(Vector2 displacement)
             {
