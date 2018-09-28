@@ -48,13 +48,21 @@ namespace Platformer
         private void Update()
         {
             CalculateVelocity();
-            HandleWallSliding();
+            HandleWallSliding(); // wall sliding vs max slope sliding ?? (disable wall sliding for angled walls)
 
             controller.Move(velocity * Time.deltaTime, directionalInput);
 
             if (controller.collisions.above || controller.collisions.below)
             {
-                velocity.y = 0;
+                if (controller.collisions.slidingDownMaxSlope)
+                {
+                    velocity.y += -gravity * Time.deltaTime * controller.collisions.slopeNormal.y;
+                }
+
+                else
+                {
+                    velocity.y = 0;
+                }
             }
         }
 
@@ -120,7 +128,18 @@ namespace Platformer
 
             if (controller.collisions.below)
             {
-                velocity.y = maxJumpVelocity;
+                if (controller.collisions.slidingDownMaxSlope)
+                {
+                    if (Mathf.Sign(directionalInput.x) != -Mathf.Sign(controller.collisions.slopeNormal.x))
+                    {
+                        velocity = maxJumpVelocity * controller.collisions.slopeNormal;
+                    }
+                }
+
+                else
+                {
+                    velocity.y = maxJumpVelocity;
+                }               
             }
         }
 

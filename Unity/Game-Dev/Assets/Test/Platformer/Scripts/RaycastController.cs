@@ -11,6 +11,7 @@ namespace Platformer
         new internal BoxCollider2D collider;
 
         protected const float skinWidth = 0.015F;
+
         protected int horizontalRayCount;
         protected int verticalRayCount;
         protected float horizontalRaySpacing;
