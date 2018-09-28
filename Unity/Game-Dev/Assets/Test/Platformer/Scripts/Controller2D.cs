@@ -110,7 +110,7 @@ namespace Platformer
 
                 if (drawRaycasts)
                 {
-                    Debug.DrawRay(offsetOrigin, rayLength * directionX * Vector2.right, Color.red);
+                    Debug.DrawRay(offsetOrigin, directionX * Vector2.right, Color.red);
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace Platformer
 
                 if (drawRaycasts)
                 {
-                    Debug.DrawRay(offsetOrigin, rayLength * directionY * Vector2.up, Color.red);
+                    Debug.DrawRay(offsetOrigin, directionY * Vector2.up, Color.red);
                 }
             }
 

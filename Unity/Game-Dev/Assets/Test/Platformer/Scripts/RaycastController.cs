@@ -6,13 +6,13 @@ namespace Platformer
     public class RaycastController : MonoBehaviour
     {
         public LayerMask collisionMask;
-        public int horizontalRayCount = 4;
-        public int verticalRayCount = 4;
+        public float targetDistBetweenRays = 0.25F;
         
         new internal BoxCollider2D collider;
 
         protected const float skinWidth = 0.015F;
-
+        protected int horizontalRayCount;
+        protected int verticalRayCount;
         protected float horizontalRaySpacing;
         protected float verticalRaySpacing;
 
@@ -42,11 +42,16 @@ namespace Platformer
         {
             Bounds bounds = GetRaycastBounds();
 
-            horizontalRayCount = Mathf.Max(2, horizontalRayCount);
-            verticalRayCount = Mathf.Max(2, verticalRayCount);
+            float boundsWidth = bounds.size.x;
+            float boundsHeight = bounds.size.y;
 
-            horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-            verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+            targetDistBetweenRays = Mathf.Min(targetDistBetweenRays, boundsWidth, boundsHeight);
+
+            horizontalRayCount = Mathf.FloorToInt(boundsHeight / targetDistBetweenRays) + 1;
+            verticalRayCount = Mathf.FloorToInt(boundsWidth / targetDistBetweenRays) + 1;
+
+            horizontalRaySpacing = boundsHeight / (horizontalRayCount - 1);
+            verticalRaySpacing = boundsWidth / (verticalRayCount - 1);
         }
 
         private Bounds GetRaycastBounds()

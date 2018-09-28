@@ -8,6 +8,7 @@ namespace Platformer
     {
         public LayerMask passengerMask;
         public bool cyclicLoop;
+        public bool drawRaycasts = false;
 
         public float speed;
         public float waitTime;
@@ -83,6 +84,11 @@ namespace Platformer
 
                         passengerMovement.Add(new PassengerMovement(hit.transform, new Vector2(pushX, pushY), directionY == 1, true));
                     }
+
+                    if (drawRaycasts)
+                    {
+                        Debug.DrawRay(offsetOrigin, directionY * Vector2.up, Color.blue);
+                    }
                 }
             }
 
@@ -105,6 +111,11 @@ namespace Platformer
 
                         passengerMovement.Add(new PassengerMovement(hit.transform, new Vector2(pushX, pushY), false, true));
                     }
+
+                    if (drawRaycasts)
+                    {
+                        Debug.DrawRay(offsetOrigin, directionX * Vector2.right, Color.blue);
+                    }
                 }
             }
 
@@ -126,6 +137,11 @@ namespace Platformer
                         float pushY = displacement.y;
 
                         passengerMovement.Add(new PassengerMovement(hit.transform, new Vector2(pushX, pushY), true, false));
+                    }
+
+                    if (drawRaycasts)
+                    {
+                        Debug.DrawRay(offsetOrigin, directionY * Vector2.up, Color.blue);
                     }
                 }
             }

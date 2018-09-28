@@ -25,9 +25,13 @@ namespace Platformer
         private float minJumpVelocity;
         private float timeToWallUnstick;
         private float velocityXSmoothing;
-        
+
+        private Vector2 directionalInput = Vector2.zero;
         private Vector2 velocity = Vector2.zero;
         private Controller2D controller;
+
+        private bool wallSliding;
+        private int inputDirX, wallDirX;
 
         private void Start()
         {
@@ -43,16 +47,23 @@ namespace Platformer
 
         private void Update()
         {
-            Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            CalculateVelocity();
+            HandleWallSliding();
 
-            int inputDirX = Math.Sign(input.x);
-            int wallDirX = controller.collisions.left ? -1 : 1;
+            controller.Move(velocity * Time.deltaTime, directionalInput);
 
-            float targetVelocityX = input.x * movementSpeed;
-            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing,
-                                          controller.collisions.below ? accelerationTimeGrounded : accelerationTimeAirborne);
+            if (controller.collisions.above || controller.collisions.below)
+            {
+                velocity.y = 0;
+            }
+        }
 
-            bool wallSliding = (controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0;
+        private void HandleWallSliding()
+        {
+            inputDirX = Math.Sign(directionalInput.x);
+            wallDirX = controller.collisions.left ? -1 : 1;
+
+            wallSliding = (controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0;
 
             if (wallSliding)
             {
@@ -70,46 +81,52 @@ namespace Platformer
                 {
                     timeToWallUnstick = wallStickTime;
                 }
-            }   
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                if (wallSliding)
-                {
-                    if (inputDirX == wallDirX)
-                    {
-                        velocity = new Vector2(-wallDirX * wallJumpClimb.x, wallJumpClimb.y);
-                    }
-
-                    else if (inputDirX == 0)
-                    {
-                        velocity = new Vector2(-wallDirX * wallJumpOff.x, wallJumpOff.y);
-                    }
-
-                    else
-                    {
-                        velocity = new Vector2(-wallDirX * wallLeapOff.x, wallLeapOff.y);
-                    }
-                }
-
-                if (controller.collisions.below)
-                {
-                    velocity.y = maxJumpVelocity;
-                }                  
             }
+        }
 
-            else if (Input.GetKeyUp(KeyCode.Space))
-            {
-                velocity.y = Mathf.Min(velocity.y, minJumpVelocity);
-            }
+        private void CalculateVelocity()
+        {
+            float targetVelocityX = directionalInput.x * movementSpeed;
+            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing,
+                                          controller.collisions.below ? accelerationTimeGrounded : accelerationTimeAirborne);
 
             velocity.y += gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime, input);
+        }
 
-            if (controller.collisions.above || controller.collisions.below)
+        public void SetDirectionalInput(Vector2 input)
+        {
+            directionalInput = input;
+        }
+
+        public void OnJumpInputDown()
+        {
+            if (wallSliding)
             {
-                velocity.y = 0;
+                if (inputDirX == wallDirX)
+                {
+                    velocity = new Vector2(-wallDirX * wallJumpClimb.x, wallJumpClimb.y);
+                }
+
+                else if (inputDirX == 0)
+                {
+                    velocity = new Vector2(-wallDirX * wallJumpOff.x, wallJumpOff.y);
+                }
+
+                else
+                {
+                    velocity = new Vector2(-wallDirX * wallLeapOff.x, wallLeapOff.y);
+                }
             }
+
+            if (controller.collisions.below)
+            {
+                velocity.y = maxJumpVelocity;
+            }
+        }
+
+        public void OnJumpInputUp()
+        {
+            velocity.y = Mathf.Min(velocity.y, minJumpVelocity);
         }
     }
 }
