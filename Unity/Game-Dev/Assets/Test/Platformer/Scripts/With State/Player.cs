@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace FSM
 {
@@ -41,9 +42,9 @@ namespace FSM
             CalculateVelocity();
 
             displacement = velocity * Time.deltaTime;
-
             controller.DetectCollisions(displacement);
 
+            currentState.HandleCollisions();
             currentState.Tick();           
         }
 
@@ -57,10 +58,10 @@ namespace FSM
         {
             float targetVelocityX = input.x * movementSpeed;
             velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing,
-                                          controller.hits.Grounded ? accelerationTimeGrounded : accelerationTimeAirborne);
+                                          controller.collisions.Grounded ? accelerationTimeGrounded : accelerationTimeAirborne);
 
             velocity.y += gravity * Time.deltaTime;
-        }
+        }       
     }
 }
 
