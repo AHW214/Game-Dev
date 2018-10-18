@@ -9,8 +9,8 @@ namespace FSM
         public float targetDistBetweenRays = 0.25F;
 
         internal RaycastHits hits = new RaycastHits();
+        internal const float skinWidth = 0.015F;
 
-        private const float skinWidth = 0.015F;
         private new Collider2D collider;
 
         private readonly int[] rayCounts = new int[2];
@@ -28,7 +28,7 @@ namespace FSM
             hits.Reset();
         }
 
-        public void HandleCollisions(ref Vector2 displacement)
+        public void DetectCollisions(Vector2 displacement)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -36,20 +36,19 @@ namespace FSM
 
                 if (magnitude > 0)
                 {
-                    float sign = Mathf.Sign(displacement[i]);
+                    int sign = (int)Mathf.Sign(displacement[i]);
 
                     RaycastHit2D hit = RaycastRow(i, magnitude + skinWidth, sign, collisionMask);
 
                     if (hit)
                     {
-                        hits[i][(int)sign] = hit;
-                        displacement[i] = sign * (hit.distance - skinWidth);
+                        hits[i][sign] = hit;                        
                     }
                 }
             }
         }
 
-        private RaycastHit2D RaycastRow(int compIndex, float initDist, float sign, LayerMask mask)
+        private RaycastHit2D RaycastRow(int compIndex, float initDist, int sign, LayerMask mask)
         {
             Bounds bounds = GetRaycastBounds();
 

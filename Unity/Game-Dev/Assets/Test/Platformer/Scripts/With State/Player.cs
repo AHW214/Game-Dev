@@ -8,26 +8,31 @@ namespace FSM
 
         internal Vector2 input;
         internal Vector2 velocity;
+        internal Vector2 displacement;
 
-        private Controller2D controller;
+        internal Controller2D controller;
         private State currentState;
                               
         private void Start()
         {
             controller = GetComponent<Controller2D>();
-            //SetState(new Idle(this));
+            SetState(new Idle(this));
         }
 
         private void Update()
         {
             input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-            Vector2 displacement = Time.deltaTime * input;
-            controller.HandleCollisions(ref displacement);
+            velocity.x = input.x;
+            velocity.y += gravity * Time.deltaTime;
 
-            transform.Translate(displacement);
+            displacement = velocity * Time.deltaTime;
 
-            //currentState.Tick();
+            controller.DetectCollisions(displacement);
+
+            currentState.Tick();
+
+            transform.Translate(displacement);            
         }
 
         public void SetState(State state)
