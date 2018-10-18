@@ -23,17 +23,14 @@ namespace FSM
             CalculateRaySpacing();           
         }
 
-        private void Update()
-        {
-            hits.Reset();
-        }
-
         public void DetectCollisions(Vector2 displacement)
         {
             for (int i = 0; i < 2; i++)
             {
-                float magnitude = Mathf.Abs(displacement[i]);
+                hits.Reset(i);
 
+                float magnitude = Mathf.Abs(displacement[i]);
+                
                 if (magnitude > 0)
                 {
                     int sign = (int)Mathf.Sign(displacement[i]);
@@ -42,7 +39,7 @@ namespace FSM
 
                     if (hit)
                     {
-                        hits[i][sign] = hit;                        
+                        hits[i][sign] = hit;
                     }
                 }
             }
@@ -102,16 +99,16 @@ namespace FSM
 
         public class RaycastHits
         {
-            private readonly IDictionary<int, RaycastHit2D>[] components = new IDictionary<int, RaycastHit2D>[2];
+            private readonly IDictionary<int, RaycastHit2D?>[] components = new IDictionary<int, RaycastHit2D?>[2];
 
             public RaycastHits()
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    components[i] = new Dictionary<int, RaycastHit2D>
+                    components[i] = new Dictionary<int, RaycastHit2D?>
                     {
-                        {  1, new RaycastHit2D() },
-                        { -1, new RaycastHit2D() }
+                        {  1, null },
+                        { -1, null }
                     };               
                 }               
             }
@@ -120,24 +117,34 @@ namespace FSM
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    components[i][1] = new RaycastHit2D();
-                    components[i][-1] = new RaycastHit2D();                   
+                    Reset(i);                 
                 }
             }
 
-            public IDictionary<int, RaycastHit2D> X
+            public void Reset(int index)
+            {
+                components[index][1] = null;
+                components[index][-1] = null;
+            }
+
+            public IDictionary<int, RaycastHit2D?> X
             {
                 get { return components[0]; }
             }
 
-            public IDictionary<int, RaycastHit2D> Y
+            public IDictionary<int, RaycastHit2D?> Y
             {
                 get { return components[1]; }
             }
 
-            public IDictionary<int, RaycastHit2D> this[int index]
+            public IDictionary<int, RaycastHit2D?> this[int index]
             {
                 get { return components[index]; }
+            }
+
+            public bool Grounded
+            {
+                get { return components[1][-1] != null; }
             }
         }
     }

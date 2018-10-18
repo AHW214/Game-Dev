@@ -2,16 +2,16 @@
 
 namespace FSM
 {
-    public class Idle : State
+    public class Jumping : State
     {
-        public Idle(Player player) : base(player)
+        public Jumping(Player player) : base(player)
         {
 
         }
 
         public override void Tick()
         {
-            Debug.Log("idle");
+            Debug.Log("jumping");
 
             for (int i = 0; i < 2; i++)
             {
@@ -27,16 +27,23 @@ namespace FSM
                         {
                             player.velocity[i] = 0;
                         }
+
+                        if (i == 1 && dir == -1)
+                        {
+                            player.SetState(new Idle(player));
+                        }
                     }
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                player.SetState(new Jumping(player));
-            }
-
             player.transform.Translate(player.displacement);
+        }
+
+        public override void OnStateEnter()
+        {
+            player.velocity.y = player.jumpVelocityRange[1];
+
+            player.transform.Translate(player.displacement); //refactor
         }
     }
 }
