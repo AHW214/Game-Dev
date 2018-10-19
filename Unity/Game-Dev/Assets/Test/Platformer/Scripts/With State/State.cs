@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace FSM
 {
     public abstract class State
     {
-        protected Player player;
+        public Player player;
+        public Type TSuperstate;
 
         public abstract void Tick();
 

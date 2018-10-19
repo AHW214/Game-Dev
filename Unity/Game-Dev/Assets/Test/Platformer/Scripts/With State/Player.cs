@@ -21,7 +21,7 @@ namespace FSM
         private float velocityXSmoothing;
 
         internal Controller2D controller;
-        private State currentState;
+        public Superstate currentState;
                               
         private void Start()
         {
@@ -48,10 +48,15 @@ namespace FSM
             currentState.Tick();           
         }
 
-        public void SetState(State state)
+        public void SetState(Superstate state)
         {
             currentState?.OnStateExit();
             (currentState = state)?.OnStateEnter();
+        }
+
+        public void SetState(State state)
+        {
+            SetState((Superstate)Activator.CreateInstance(state.TSuperstate, state));
         }
 
         private void CalculateVelocity()
