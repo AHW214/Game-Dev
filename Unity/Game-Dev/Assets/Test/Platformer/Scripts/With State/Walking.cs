@@ -3,33 +3,33 @@ using UnityEngine;
 
 namespace FSM
 {
-    public class Idle : State
+    public class Walking : State
     {
         public override Type TSuperstate => typeof(Grounded);
-        public override string animName => "idle";
+        public override string animName => "walking";
 
-        public Idle(Player player) : base(player)
+        public Walking(Player player) : base(player)
         {
 
         }
 
         public override void Tick()
         {
-            if (Mathf.Abs(player.displacement.x) > 1E-3)
+            if (Mathf.Abs(player.displacement.x) < 1E-3)
             {
-                player.currentState.SetState(new Walking(player));
+                player.currentState.SetState(new Idle(player));
             }
         }
 
         public override void OnStateEnter()
         {
-            Debug.Log("Enter: Idle");
+            Debug.Log("Enter: Walking");
             player.animator.Play(animName);
         }
 
         public override void OnStateExit()
         {
-            Debug.Log("Exited: Idle");
+            Debug.Log("Exited: Walking");
         }
     }
 }

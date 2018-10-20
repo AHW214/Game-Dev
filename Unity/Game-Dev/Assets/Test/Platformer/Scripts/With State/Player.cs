@@ -20,11 +20,16 @@ namespace FSM
         private float gravity;     
         private float velocityXSmoothing;
 
+        private SpriteRenderer spriteRenderer;
+        internal Animator animator;
         internal Controller2D controller;
+        
         public Superstate currentState;
                               
         private void Start()
         {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            animator = GetComponent<Animator>();           
             controller = GetComponent<Controller2D>();
 
             gravity = -(2 * jumpHeightRange[1]) / Mathf.Pow(timeToJumpApex, 2);
@@ -38,6 +43,8 @@ namespace FSM
         private void Update()
         {
             input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+            FaceForward();
 
             CalculateVelocity();
 
@@ -66,7 +73,22 @@ namespace FSM
                                           controller.collisions.Grounded ? accelerationTimeGrounded : accelerationTimeAirborne);
 
             velocity.y += gravity * Time.deltaTime;
-        }       
+        }
+
+        private void FaceForward()
+        {
+            int sign = Math.Sign(input.x);
+
+            if (sign == 1 && spriteRenderer.flipX)
+            {
+                spriteRenderer.flipX = false;
+            }
+
+            else if (sign == -1 && !spriteRenderer.flipX)
+            {
+                spriteRenderer.flipX = true;
+            }
+        }
     }
 }
 

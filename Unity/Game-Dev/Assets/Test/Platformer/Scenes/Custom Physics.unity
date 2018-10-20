@@ -327,12 +327,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f7825a9719d3084e8b35f6d7415d598, type: 2}
   m_IsPrefabAsset: 0
---- !u!114 &204756271 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114976557468135730, guid: 5f7825a9719d3084e8b35f6d7415d598,
-    type: 2}
-  m_PrefabInternal: {fileID: 204756268}
-  m_Script: {fileID: 11500000, guid: b4544ea16a0683748b23d541c42f22d9, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -369,7 +363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d2a8ddc07eb7304586c4b8c1beb646f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 204756271}
+  target: {fileID: 0}
   focusAreaDimensions: {x: 1.5, y: 2.5}
   verticalOffset: 0.5
   lookAheadDistX: 1
@@ -1293,7 +1287,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6a18cc0eedcff048b5ce36a46fa564f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: -9.81
+  jumpHeightRange: {x: 1, y: 4}
+  timeToJumpApex: 0.4
+  accelerationTimeAirborne: 0.2
+  accelerationTimeGrounded: 0.1
+  movementSpeed: 6
 --- !u!1 &1949600622
 GameObject:
   m_ObjectHideFlags: 0

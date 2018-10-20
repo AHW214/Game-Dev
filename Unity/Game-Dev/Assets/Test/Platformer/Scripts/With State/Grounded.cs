@@ -19,6 +19,24 @@ namespace FSM
             return new Idle(player);
         }
 
+        public override void Tick()
+        {
+            if (!player.controller.collisions.Grounded)
+            {
+                player.SetState(new Falling(player));
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                player.SetState(new Jumping(player));
+            }
+
+            else
+            {
+                base.Tick();
+            }           
+        }
+
         public override void OnStateEnter()
         {
             base.OnStateEnter();

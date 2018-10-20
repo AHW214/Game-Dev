@@ -6,7 +6,9 @@ namespace FSM
     public abstract class State
     {
         public Player player;
-        public Type TSuperstate;
+
+        public abstract Type TSuperstate { get; }
+        public abstract string animName { get; }
 
         public abstract void Tick();
 

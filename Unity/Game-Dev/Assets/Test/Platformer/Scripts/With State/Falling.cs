@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace FSM
 {
     public class Falling : State
     {
+        public override Type TSuperstate => typeof(Airborne);
+        public override string animName => "falling";
+
         public Falling(Player player) : base(player)
         {
 
@@ -27,6 +31,7 @@ namespace FSM
         public override void OnStateEnter()
         {
             Debug.Log("Entered: Falling");
+            player.animator.Play(animName);
         }
 
         public override void OnStateExit()

@@ -1,12 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace FSM
 {
     public class Jumping : State
     {
+        public override Type TSuperstate => typeof(Airborne);
+        public override string animName => "jumping";
+
         public Jumping(Player player) : base(player)
         {
-            TSuperstate = typeof(Airborne);
+
         }
 
         public override void Tick()
@@ -21,6 +25,7 @@ namespace FSM
         {
             player.velocity.y = player.jumpVelocityRange[1];
             Debug.Log("Entered: Jumping");
+            player.animator.Play(animName);
         }
 
         public override void OnStateExit()
