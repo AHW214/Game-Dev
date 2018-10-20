@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace FSM
 {
-    public class Jumping : State
+    public class WallJumping : State
     {
         public override Type TSuperstate => typeof(Airborne);
         public override string animName => "jumping";
 
-        public Jumping(Player player) : base(player)
+        public WallJumping(Player player) : base(player)
         {
 
         }
@@ -28,7 +28,7 @@ namespace FSM
 
         public override void OnStateEnter()
         {
-            player.velocity.y = player.jumpVelocityRange[1];
+            player.velocity = new Vector2(-player.facing * 10, player.jumpVelocityRange[0]); //jank
             Debug.Log("Entered: Jumping");
             player.animator.Play(animName);
         }

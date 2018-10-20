@@ -13,19 +13,12 @@ namespace FSM
 
         }
 
-        protected override void CollisionHandler(int component, int dir, RaycastHit2D hit)
-        {
-            base.CollisionHandler(component, dir, hit);
-
-            if (component == 1 && dir == -1)
-            {
-                player.SetState(new Idle(player));
-            }
-        }
-
         public override void Tick()
         {
-
+            if (player.input.x != 0 && player.controller.collisions[0][player.facing] != null)
+            {
+                player.currentState.SetState(new WallSliding(player));
+            }
         }
 
         public override void OnStateEnter()

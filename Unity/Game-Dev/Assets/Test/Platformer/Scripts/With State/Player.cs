@@ -7,9 +7,12 @@ namespace FSM
     {
         public Vector2 jumpHeightRange = new Vector2(1, 4);
         public float timeToJumpApex = 0.4F;
+        public float maxWallslideSpeed = 0.7F;
         public float accelerationTimeAirborne = 0.2F;
         public float accelerationTimeGrounded = 0.1F;
         public float movementSpeed = 6;
+
+        internal int facing = 1;
 
         internal Vector2 input;
         internal Vector2 velocity;
@@ -45,7 +48,6 @@ namespace FSM
             input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
             FaceForward();
-
             CalculateVelocity();
 
             displacement = velocity * Time.deltaTime;
@@ -79,14 +81,10 @@ namespace FSM
         {
             int sign = Math.Sign(input.x);
 
-            if (sign == 1 && spriteRenderer.flipX)
+            if (sign == -facing)
             {
-                spriteRenderer.flipX = false;
-            }
-
-            else if (sign == -1 && !spriteRenderer.flipX)
-            {
-                spriteRenderer.flipX = true;
+                facing = sign;
+                spriteRenderer.flipX = !spriteRenderer.flipX;
             }
         }
     }
