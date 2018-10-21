@@ -6,7 +6,7 @@ namespace FSM
     public class Walking : State
     {
         public override Type TSuperstate => typeof(Grounded);
-        public override string animName => "walking";
+        public override string AnimName => "walking";
 
         public Walking(Player player) : base(player)
         {
@@ -24,7 +24,7 @@ namespace FSM
         public override void OnStateEnter()
         {
             Debug.Log("Enter: Walking");
-            player.animator.Play(animName);
+            player.animator.Play(AnimName);
         }
 
         public override void OnStateExit()

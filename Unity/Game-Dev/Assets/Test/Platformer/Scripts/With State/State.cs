@@ -8,7 +8,7 @@ namespace FSM
         public Player player;
 
         public abstract Type TSuperstate { get; }
-        public abstract string animName { get; }
+        public abstract string AnimName { get; }
 
         public abstract void Tick();
 

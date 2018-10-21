@@ -6,7 +6,7 @@ namespace FSM
     public class Jumping : State
     {
         public override Type TSuperstate => typeof(Airborne);
-        public override string animName => "jumping";
+        public override string AnimName => "jumping";
 
         public Jumping(Player player) : base(player)
         {
@@ -15,7 +15,17 @@ namespace FSM
 
         public override void Tick()
         {
-            if (player.input.x != 0 && player.controller.collisions[0][player.facing] != null)
+            if (player.controller.collisions[1][-1] != null)
+            {
+                player.SetState(new Idle(player));
+            }
+
+            else if (player.controller.collisions[1][1]?.collider.CompareTag("One Way Platform") ?? false)
+            {
+                player.currentState.SetState(new AscendingPlatform(player));
+            }
+
+            else if (player.input.x != 0 && player.controller.collisions[0][player.facing] != null)
             {
                 player.currentState.SetState(new WallSliding(player));
             }
@@ -30,7 +40,7 @@ namespace FSM
         {
             player.velocity.y = player.jumpVelocityRange[1];
             Debug.Log("Entered: Jumping");
-            player.animator.Play(animName);
+            player.animator.Play(AnimName);
         }
 
         public override void OnStateExit()

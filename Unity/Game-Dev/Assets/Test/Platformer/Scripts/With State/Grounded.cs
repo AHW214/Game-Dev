@@ -31,6 +31,11 @@ namespace FSM
                 player.SetState(new Jumping(player));
             }
 
+            else if (player.input.y < 0 && (player.controller.collisions[1][-1]?.collider.CompareTag("One Way Platform") ?? false))
+            {
+                player.SetState(new DescendingPlatform(player));
+            }
+
             else
             {
                 base.Tick();

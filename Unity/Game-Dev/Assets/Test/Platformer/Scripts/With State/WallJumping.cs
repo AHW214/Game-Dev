@@ -6,7 +6,7 @@ namespace FSM
     public class WallJumping : State
     {
         public override Type TSuperstate => typeof(Airborne);
-        public override string animName => "jumping";
+        public override string AnimName => "jumping";
 
         public WallJumping(Player player) : base(player)
         {
@@ -15,7 +15,12 @@ namespace FSM
 
         public override void Tick()
         {
-            if (player.input.x != 0 && player.controller.collisions[0][player.facing] != null)
+            if (player.controller.collisions[1][-1] != null)
+            {
+                player.SetState(new Idle(player));
+            }
+
+            else if (player.input.x != 0 && player.controller.collisions[0][player.facing] != null)
             {
                 player.currentState.SetState(new WallSliding(player));
             }
@@ -30,7 +35,7 @@ namespace FSM
         {
             player.velocity = new Vector2(-player.facing * 10, player.jumpVelocityRange[0]); //jank
             Debug.Log("Entered: Jumping");
-            player.animator.Play(animName);
+            player.animator.Play(AnimName);
         }
 
         public override void OnStateExit()

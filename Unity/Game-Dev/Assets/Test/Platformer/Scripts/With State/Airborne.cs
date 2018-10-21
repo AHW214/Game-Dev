@@ -21,15 +21,7 @@ namespace FSM
 
         public override void Tick()
         {
-            if (player.controller.collisions[1][-1] != null)
-            {
-                player.SetState(new Idle(player));
-            }
-
-            else
-            {
-                base.Tick();
-            }         
+            base.Tick();       
         }
 
         public override void OnStateEnter()

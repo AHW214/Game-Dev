@@ -6,7 +6,7 @@ namespace FSM
     public class Idle : State
     {
         public override Type TSuperstate => typeof(Grounded);
-        public override string animName => "idle";
+        public override string AnimName => "idle";
 
         public Idle(Player player) : base(player)
         {
@@ -24,7 +24,7 @@ namespace FSM
         public override void OnStateEnter()
         {
             Debug.Log("Enter: Idle");
-            player.animator.Play(animName);
+            player.animator.Play(AnimName);
         }
 
         public override void OnStateExit()

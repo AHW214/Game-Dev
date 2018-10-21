@@ -6,7 +6,7 @@ namespace FSM
     public class WallSliding : State
     {
         public override Type TSuperstate => typeof(Airborne);
-        public override string animName => "idle";
+        public override string AnimName => "idle";
 
         public WallSliding(Player player) : base(player)
         {
@@ -15,7 +15,12 @@ namespace FSM
 
         public override void Tick()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (player.controller.collisions[1][-1] != null)
+            {
+                player.SetState(new Idle(player));
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Space))
             {
                 player.currentState.SetState(new WallJumping(player));
             }
@@ -34,7 +39,7 @@ namespace FSM
         public override void OnStateEnter()
         {
             Debug.Log("Entered: Wallsliding");
-            player.animator.Play(animName);
+            player.animator.Play(AnimName);
         }
 
         public override void OnStateExit()

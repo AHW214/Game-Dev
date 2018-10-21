@@ -10,7 +10,7 @@ namespace FSM
         internal Collisions collisions = new Collisions();
         internal const float skinWidth = 0.015F;
 
-        private new Collider2D collider;
+        internal new Collider2D collider;
 
         private readonly int[] rayCounts = new int[2];
         private readonly float[] raySpacings = new float[2];
