@@ -17,8 +17,9 @@ namespace StateTest
 
         private State mInitialState;
 
-        public State CurrentState => mStateStack[mStateStackTopIndex].state;
-
+        public StateInfo CurrentStateInfo => mStateStack[mStateStackTopIndex];
+        public State CurrentState => CurrentStateInfo.state;
+        
         public void TransitionTo(State destState)
         {
             State _destState = null;
@@ -124,6 +125,22 @@ namespace StateTest
             }
         }
 
+        public void Tick()
+        {
+            Tick(mStateStack.Length);
+        }
+
+        public void Tick(int count)
+        {
+            StateInfo si = CurrentStateInfo;
+
+            for(int i = 0; si != null && i < count; i++)
+            {
+                si.state.Tick();
+                si = si.parentStateInfo;
+            }
+        }
+
         public StateInfo AddState(State state)
         {
             return AddState(state, null);
@@ -134,8 +151,7 @@ namespace StateTest
             StateInfo parentStateInfo = null;
             if (parent != null)
             {
-                parentStateInfo = mStateDict[parent];
-                if (parentStateInfo == null)
+                if (!mStateDict.TryGetValue(parent, out parentStateInfo))
                 {
                     parentStateInfo = AddState(parent, null);
                 }
@@ -265,7 +281,7 @@ namespace StateTest
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 entity.stateMachine.TransitionTo(new B(entity));
-            }
+            }          
         }
 
         public override void OnEnter()
@@ -284,13 +300,39 @@ namespace StateTest
         }
     }
 
+    public class AP : State
+    {
+        public override void Tick()
+        {
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                entity.stateMachine.TransitionTo(new B(entity));
+            }
+        }
+
+        public override void OnEnter()
+        {
+            Debug.Log($"Entered: {Name}");
+        }
+
+        public override void OnExit()
+        {
+            Debug.Log($"Exited: {Name}");
+        }
+
+        public AP(Entity entity) : base(entity)
+        {
+
+        }
+    }
+
     public class B : State
     {
         public override void Tick()
         {
             if (Input.GetKeyUp(KeyCode.Space))
             {
-                entity.stateMachine.TransitionTo(new A(entity));
+                entity.stateMachine.TransitionTo(new A(entity));               
             }
         }
 
@@ -305,6 +347,29 @@ namespace StateTest
         }
 
         public B(Entity entity) : base(entity)
+        {
+
+        }
+    }
+
+    public class BP : State
+    {
+        public override void Tick()
+        {
+            
+        }
+
+        public override void OnEnter()
+        {
+            Debug.Log($"Entered: {Name}");
+        }
+
+        public override void OnExit()
+        {
+            Debug.Log($"Exited: {Name}");
+        }
+
+        public BP(Entity entity) : base(entity)
         {
 
         }
