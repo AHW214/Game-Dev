@@ -27,7 +27,7 @@ namespace FSMRev3
                 curStateInfo = curStateInfo.parentStateInfo;
             }
 
-            MoveTempList();
+            MoveTempStack();
         }
 
         private StateInfo<T> PrepareStatesToEnter(string destStateName)
@@ -44,7 +44,7 @@ namespace FSMRev3
             return curStateInfo;
         }
 
-        private void MoveTempList()
+        private void MoveTempStack()
         {
             foreach(StateInfo<T> stateInfo in mTempStateStack)
             {
@@ -82,7 +82,7 @@ namespace FSMRev3
                     stateInfo.active = true;
                 }
 
-                MoveTempList();             
+                MoveTempStack();             
             }           
         }
 
