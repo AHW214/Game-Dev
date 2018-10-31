@@ -15,20 +15,16 @@ namespace StateTest
         private readonly IDictionary<State, StateInfo> mStateDict =
             new Dictionary<State, StateInfo>();
 
-        private State mInitialState;
+        private State mCurrentState;
 
         public StateInfo CurrentStateInfo => mStateStack[mStateStackTopIndex];
         public State CurrentState => CurrentStateInfo.state;
         
-        public void TransitionTo(State destState)
+        public void PerformTransitions()
         {
-            State _destState = null;
-            while (destState != null)
+            while (CurrentState != mCurrentState)
             {
-                _destState = destState;
-                destState = null;
-
-                StateInfo commonStateInfo = SetupTempStateStackWithStatesToEnter(_destState); //android devs with the clutch method names
+                StateInfo commonStateInfo = SetupTempStateStackWithStatesToEnter(mCurrentState); //android devs with the clutch method names
                 InvokeExitMethods(commonStateInfo);
                 int stateStackEnteringIndex = MoveTempStateStackToStateStack();
                 InvokeEnterMethods(stateStackEnteringIndex);
@@ -51,7 +47,7 @@ namespace StateTest
 
         private void SetupInitialStateStack()
         {
-            StateInfo curStateInfo = mStateDict[mInitialState];
+            StateInfo curStateInfo = mStateDict[mCurrentState];
 
             for (mTempStateStackCount = 0; curStateInfo != null; mTempStateStackCount++)
             {
@@ -125,20 +121,14 @@ namespace StateTest
             }
         }
 
-        public void Tick()
-        {
-            Tick(mStateStack.Length);
-        }
-
         public void Tick(int count)
         {
-            StateInfo si = CurrentStateInfo;
-
-            for(int i = 0; si != null && i < count; i++)
+            for(int i = 0; i <= mStateStackTopIndex; i++)
             {
-                si.state.Tick();
-                si = si.parentStateInfo;
+                mStateStack[i].state.Tick();
             }
+
+            PerformTransitions();
         }
 
         public StateInfo AddState(State state)
@@ -177,9 +167,9 @@ namespace StateTest
             return stateInfo;
         }
 
-        public void SetInitialState(State initialState)
+        public void SetState(State state)
         {
-            mInitialState = initialState;
+            mCurrentState = state;
         }
     }
 
@@ -271,107 +261,6 @@ namespace StateTest
         public static bool operator !=(State lhs, State rhs)
         {
             return !(lhs == rhs);
-        }
-    }
-
-    public class A : State
-    {
-        public override void Tick()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                entity.stateMachine.TransitionTo(new B(entity));
-            }          
-        }
-
-        public override void OnEnter()
-        {
-            Debug.Log($"Entered: {Name}");
-        }
-
-        public override void OnExit()
-        {
-            Debug.Log($"Exited: {Name}");
-        }
-
-        public A(Entity entity): base(entity)
-        {
-
-        }
-    }
-
-    public class AP : State
-    {
-        public override void Tick()
-        {
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                entity.stateMachine.TransitionTo(new B(entity));
-            }
-        }
-
-        public override void OnEnter()
-        {
-            Debug.Log($"Entered: {Name}");
-        }
-
-        public override void OnExit()
-        {
-            Debug.Log($"Exited: {Name}");
-        }
-
-        public AP(Entity entity) : base(entity)
-        {
-
-        }
-    }
-
-    public class B : State
-    {
-        public override void Tick()
-        {
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                entity.stateMachine.TransitionTo(new A(entity));               
-            }
-        }
-
-        public override void OnEnter()
-        {
-            Debug.Log($"Entered: {Name}");
-        }
-
-        public override void OnExit()
-        {
-            Debug.Log($"Exited: {Name}");
-        }
-
-        public B(Entity entity) : base(entity)
-        {
-
-        }
-    }
-
-    public class BP : State
-    {
-        public override void Tick()
-        {
-            
-        }
-
-        public override void OnEnter()
-        {
-            Debug.Log($"Entered: {Name}");
-        }
-
-        public override void OnExit()
-        {
-            Debug.Log($"Exited: {Name}");
-        }
-
-        public BP(Entity entity) : base(entity)
-        {
-
         }
     }
 }
