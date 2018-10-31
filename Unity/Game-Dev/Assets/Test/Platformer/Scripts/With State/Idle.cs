@@ -1,33 +1,33 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class Idle : State
+    public class Idle : State<Player>, ICoreState
     {
-        public override Type TSuperstate => typeof(Grounded);
-        public override string AnimName => "idle";
+        public string AnimName => "idle";
+        public bool CollisionsEnabled => true;
 
-        public Idle(Player player) : base(player)
+        public Idle(Player entity) : base(entity)
         {
 
         }
 
         public override void Tick()
         {
-            if (Mathf.Abs(player.displacement.x) > 1E-3)
+            if (Mathf.Abs(entity.displacement.x) > 1E-3)
             {
-                player.currentState.SetState(new Walking(player));
+                entity.StateMachine.SetState("Walking");
             }
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
             Debug.Log("Enter: Idle");
-            player.animator.Play(AnimName);
+            entity.animator.Play(AnimName);
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
             Debug.Log("Exited: Idle");
         }

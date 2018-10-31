@@ -1,38 +1,27 @@
 ﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class Airborne : Superstate
+    public class Airborne : State<Player>
     {
         public Airborne(Player player) : base(player)
         {
 
         }
 
-        public Airborne(State state) : base(state)
-        {
-
-        }
-
-        protected override State DetermineSubstate()
-        {
-            return new Jumping(player);
-        }
-
         public override void Tick()
         {
-            base.Tick();       
+      
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
-            base.OnStateEnter();
             Debug.Log("Enter: Airborne");
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
-            base.OnStateExit();
             Debug.Log("Exited: Airborne");
         }
     }

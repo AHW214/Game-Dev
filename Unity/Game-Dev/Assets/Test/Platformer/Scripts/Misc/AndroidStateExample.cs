@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace StateTest
@@ -198,7 +197,6 @@ namespace StateTest
 
     public abstract class State : IState, IEquatable<State>
     {
-        protected readonly Entity entity;
         public string Name => GetType().Name;
 
         public abstract void Tick();
@@ -211,11 +209,6 @@ namespace StateTest
         public virtual void OnExit()
         {
 
-        }
-
-        public State(Entity entity)
-        {
-            this.entity = entity;
         }
 
         public override bool Equals(object obj)

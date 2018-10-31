@@ -1,12 +1,12 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class WallSliding : State
+    public class WallSliding : State<Player>, ICoreState
     {
-        public override Type TSuperstate => typeof(Airborne);
-        public override string AnimName => "idle";
+        public string AnimName => "idle";
+        public bool CollisionsEnabled => true;
 
         public WallSliding(Player player) : base(player)
         {
@@ -15,34 +15,34 @@ namespace FSM
 
         public override void Tick()
         {
-            if (player.controller.collisions[1][-1] != null)
+            if (entity.controller.collisions[1][-1] != null)
             {
-                player.SetState(new Idle(player));
+                entity.StateMachine.SetState("Idle");
             }
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                player.currentState.SetState(new WallJumping(player));
+                entity.StateMachine.SetState("WallJumping");
             }
 
-            else if (player.input.x == 0 || player.controller.collisions[0][player.facing] == null)
+            else if (entity.input.x == 0 || entity.controller.collisions[0][entity.facing] == null)
             {
-                player.currentState.SetState(new Falling(player));
+                entity.StateMachine.SetState("Falling");
             }
 
             else
             {
-                player.velocity.y = Mathf.Max(player.velocity.y, -player.maxWallslideSpeed);
+                entity.velocity.y = Mathf.Max(entity.velocity.y, -entity.maxWallslideSpeed);
             }           
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
             Debug.Log("Entered: Wallsliding");
-            player.animator.Play(AnimName);
+            entity.animator.Play(AnimName);
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
             Debug.Log("Exited: Wallsliding");
         }

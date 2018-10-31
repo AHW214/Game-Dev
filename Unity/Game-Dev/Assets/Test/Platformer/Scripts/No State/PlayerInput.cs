@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Platformer
+namespace PlatformerNoFSM
 {
     [RequireComponent(typeof(Player))]
     public class PlayerInput : MonoBehaviour

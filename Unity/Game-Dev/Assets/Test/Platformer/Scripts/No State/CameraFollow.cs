@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Platformer
+namespace PlatformerNoFSM
 {
     public class CameraFollow : MonoBehaviour
     {

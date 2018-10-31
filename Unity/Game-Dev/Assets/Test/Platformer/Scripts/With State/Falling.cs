@@ -1,48 +1,48 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class Falling : State
+    public class Falling : State<Player>, ICoreState
     {
-        public override Type TSuperstate => typeof(Airborne);
-        public override string AnimName => "falling";
+        public string AnimName => "falling";
+        public bool CollisionsEnabled => true;
 
         private Collider2D platform;
 
-        public Falling(Player player) : base(player)
+        public Falling(Player entity) : base(entity)
         {
 
         }
 
         public override void Tick()
         {
-            if ((platform = player.controller.collisions[1][-1]?.collider) != null)
+            if ((platform = entity.controller.collisions[1][-1]?.collider) != null)
             {
-                if (player.input.y < 0 && platform.CompareTag("One Way Platform"))
+                if (entity.input.y < 0 && platform.CompareTag("One Way Platform"))
                 {
-                    player.currentState.SetState(new DescendingPlatform(player));
+                    entity.StateMachine.SetState("DescendingPlatform");
                 }
 
                 else
                 {
-                    player.SetState(new Idle(player));
+                    entity.StateMachine.SetState("Idle");
                 }              
             }
 
-            else if (player.input.x != 0 && player.controller.collisions[0][player.facing] != null)
+            else if (entity.input.x != 0 && entity.controller.collisions[0][entity.facing] != null)
             {
-                player.currentState.SetState(new WallSliding(player));
+                entity.StateMachine.SetState("WallSliding");
             }
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
             Debug.Log("Entered: Falling");
-            player.animator.Play(AnimName);
+            entity.animator.Play(AnimName);
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
             Debug.Log("Exited: Falling");
         }

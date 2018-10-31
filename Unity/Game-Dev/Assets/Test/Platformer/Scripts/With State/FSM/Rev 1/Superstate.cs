@@ -1,4 +1,6 @@
-﻿namespace FSM
+﻿using PlatformerFSM;
+
+namespace FSMRev1
 {
     /*
     public abstract class Superstate<Substate> : Superstate

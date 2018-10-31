@@ -1,49 +1,49 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class Jumping : State
+    public class Jumping : State<Player>, ICoreState
     {
-        public override Type TSuperstate => typeof(Airborne);
-        public override string AnimName => "jumping";
+        public string AnimName => "jumping";
+        public bool CollisionsEnabled => true;
 
-        public Jumping(Player player) : base(player)
+        public Jumping(Player entity) : base(entity)
         {
 
         }
 
         public override void Tick()
         {
-            if (player.controller.collisions[1][-1] != null)
+            if (entity.controller.collisions[1][-1] != null)
             {
-                player.SetState(new Idle(player));
+                entity.StateMachine.SetState("Idle");
             }
 
-            else if (player.controller.collisions[1][1]?.collider.CompareTag("One Way Platform") ?? false)
+            else if (entity.controller.collisions[1][1]?.collider.CompareTag("One Way Platform") ?? false)
             {
-                player.currentState.SetState(new AscendingPlatform(player));
+                entity.StateMachine.SetState("AscendingPlatform");
             }
 
-            else if (player.input.x != 0 && player.controller.collisions[0][player.facing] != null)
+            else if (entity.input.x != 0 && entity.controller.collisions[0][entity.facing] != null)
             {
-                player.currentState.SetState(new WallSliding(player));
+                entity.StateMachine.SetState("WallSliding");
             }
 
-            else if (player.velocity.y < 0)
+            else if (entity.velocity.y < 0)
             {
-                player.currentState.SetState(new Falling(player));
+                entity.StateMachine.SetState("Falling");
             }
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
-            player.velocity.y = player.jumpVelocityRange[1];
+            entity.velocity.y = entity.jumpVelocityRange[1];
             Debug.Log("Entered: Jumping");
-            player.animator.Play(AnimName);
+            entity.animator.Play(AnimName);
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
             Debug.Log("Exited: Jumping");
         }

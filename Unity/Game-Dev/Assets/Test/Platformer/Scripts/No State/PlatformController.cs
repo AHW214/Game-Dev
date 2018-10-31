@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Platformer
+namespace PlatformerNoFSM
 {
     public class PlatformController : RaycastController
     {

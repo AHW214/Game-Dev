@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Platformer
+namespace PlatformerNoFSM
 {
     [RequireComponent(typeof(Controller2D))]
     public class Player : MonoBehaviour

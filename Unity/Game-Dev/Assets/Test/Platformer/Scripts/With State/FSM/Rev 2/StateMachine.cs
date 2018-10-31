@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FSM
+namespace FSMRev2
 {
     public class StateMachine
     {

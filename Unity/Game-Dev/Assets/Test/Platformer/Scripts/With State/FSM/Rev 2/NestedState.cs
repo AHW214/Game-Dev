@@ -1,11 +1,12 @@
 ﻿using System;
 using UnityEngine;
+using PlatformerFSM;
 
-namespace FSM
+namespace FSMRev2
 {
     public abstract class _State
     {      
-        public StateTest player;
+        public Player player;
 
         public virtual Type TSuperstate { get; } = null;
 
@@ -88,7 +89,7 @@ namespace FSM
         }
         */
 
-        public CoreState(StateTest _player)
+        public CoreState(Player _player)
         {
             player = _player;
         }
@@ -103,7 +104,7 @@ namespace FSM
     {
         public override Type TSuperstate => typeof(NestedA);
 
-        public CoreA(StateTest player) : base (player)
+        public CoreA(Player player) : base (player)
         {
 
         }
@@ -112,7 +113,7 @@ namespace FSM
         {
             if (Input.GetKeyDown(KeyCode.B))
             {
-                player.stateMachine.SetState(new CoreB(player));
+                //player.stateMachine.SetState(new CoreB(player));
             }
         }
 
@@ -139,7 +140,7 @@ namespace FSM
     {
         public override Type TSuperstate => typeof(NestedB);
 
-        public CoreB(StateTest player) : base(player)
+        public CoreB(Player player) : base(player)
         {
             
         }
@@ -148,7 +149,7 @@ namespace FSM
         {
             if (Input.GetKeyDown(KeyCode.A))
             {
-                player.stateMachine.SetState(new CoreA(player));
+                //player.stateMachine.SetState(new CoreA(player));
             }
         }
 

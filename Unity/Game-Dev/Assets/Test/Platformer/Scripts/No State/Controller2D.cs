@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Platformer
+namespace PlatformerNoFSM
 { 
     public class Controller2D : RaycastController
     {       

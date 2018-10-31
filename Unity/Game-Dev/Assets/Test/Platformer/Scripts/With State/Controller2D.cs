@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using System;
 
-namespace FSM
+namespace PlatformerFSM
 {
     public class Controller2D : MonoBehaviour
     {
@@ -11,6 +12,7 @@ namespace FSM
         internal const float skinWidth = 0.015F;
 
         internal new Collider2D collider;
+        private Player player;
 
         private readonly int[] rayCounts = new int[2];
         private readonly float[] raySpacings = new float[2];
@@ -18,6 +20,7 @@ namespace FSM
         private void Start()
         {
             collider = GetComponent<Collider2D>();
+            player = GetComponent<Player>();
 
             CalculateRaySpacing();           
         }
@@ -39,6 +42,29 @@ namespace FSM
                     if (hit)
                     {
                         collisions[i][sign] = hit;
+                    }
+                }
+            }
+        }
+
+        public void HandleCollisions()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (int dir in collisions[i].Keys)
+                {
+                    RaycastHit2D? hit = collisions[i][dir];
+
+                    if (hit != null)
+                    {
+                        float disp = hit.Value.distance - skinWidth;
+
+                        player.displacement[i] = dir * disp;
+
+                        if (disp < 1E-5)
+                        {
+                            player.velocity[i] = 0;
+                        }
                     }
                 }
             }

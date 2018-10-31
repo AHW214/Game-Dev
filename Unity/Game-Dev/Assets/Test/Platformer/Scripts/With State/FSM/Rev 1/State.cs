@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using PlatformerFSM;
 
-namespace FSM
+namespace FSMRev1
 {
     public abstract class State
     {

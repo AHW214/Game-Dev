@@ -1,56 +1,40 @@
 ﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class Grounded : Superstate
+    public class Grounded : State<Player>
     {
-        public Grounded(Player player) : base(player)
+        public Grounded(Player entity) : base(entity)
         {
 
-        }
-
-        public Grounded(State state) : base(state)
-        {
-
-        }
-
-        protected override State DetermineSubstate()
-        {
-            return new Idle(player);
         }
 
         public override void Tick()
         {
-            if (!player.controller.collisions.Grounded)
+            if (!entity.controller.collisions.Grounded)
             {
-                player.SetState(new Falling(player));
+                entity.StateMachine.SetState("Falling");
             }
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                player.SetState(new Jumping(player));
+                entity.StateMachine.SetState("Jumping");
             }
 
-            else if (player.input.y < 0 && (player.controller.collisions[1][-1]?.collider.CompareTag("One Way Platform") ?? false))
+            else if (entity.input.y < 0 && (entity.controller.collisions[1][-1]?.collider.CompareTag("One Way Platform") ?? false))
             {
-                player.SetState(new DescendingPlatform(player));
-            }
-
-            else
-            {
-                base.Tick();
-            }           
+                entity.StateMachine.SetState("DescendingPlatform");
+            }          
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
-            base.OnStateEnter();
             Debug.Log("Enter: Grounded");
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
-            base.OnStateExit();
             Debug.Log("Exited: Grounded");
         }
     }

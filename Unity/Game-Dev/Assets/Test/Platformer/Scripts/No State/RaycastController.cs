@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Platformer
+namespace PlatformerNoFSM
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class RaycastController : MonoBehaviour

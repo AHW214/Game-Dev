@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
     public class Player : MonoBehaviour
     {
@@ -26,8 +27,8 @@ namespace FSM
         private SpriteRenderer spriteRenderer;
         internal Animator animator;
         internal Controller2D controller;
-        
-        public Superstate currentState;
+
+        public StateMachine<Player> StateMachine { get; private set; } = new StateMachine<Player>();
                               
         private void Start()
         {
@@ -39,8 +40,8 @@ namespace FSM
 
             jumpVelocityRange[0] = Mathf.Sqrt(2 * Mathf.Abs(gravity) * jumpHeightRange[0]);
             jumpVelocityRange[1] = Mathf.Abs(gravity) * timeToJumpApex;
-            
-            SetState(new Idle(this));
+
+            StateMachine.Initialize(this);
         }
 
         private void Update()
@@ -53,19 +54,14 @@ namespace FSM
             displacement = velocity * Time.deltaTime;
             controller.DetectCollisions(displacement);
 
-            currentState.HandleCollisions();
-            currentState.Tick();           
-        }
+            if ((StateMachine.CurrentState as ICoreState).CollisionsEnabled)
+            {
+                controller.HandleCollisions();
+            }
 
-        public void SetState(Superstate state)
-        {
-            currentState?.OnStateExit();
-            (currentState = state)?.OnStateEnter();
-        }
+            transform.Translate(displacement);
 
-        public void SetState(State state)
-        {
-            SetState((Superstate)Activator.CreateInstance(state.TSuperstate, state));
+            StateMachine.Tick();           
         }
 
         private void CalculateVelocity()

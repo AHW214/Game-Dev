@@ -1,46 +1,41 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class DescendingPlatform : State
+    public class DescendingPlatform : State<Player>, ICoreState
     {
-        public override Type TSuperstate => typeof(Airborne);
-        public override string AnimName => "falling";
+        public string AnimName => "falling";
+        public bool CollisionsEnabled => false;
 
         private Collider2D platform;
 
-        public DescendingPlatform(Player player) : base(player)
+        public DescendingPlatform(Player entity) : base(entity)
         {
 
-        }
-
-        protected override void CollisionHandler(int component, int dir, RaycastHit2D hit)
-        {
-            // maybe just have a bool condition for disabling "HandleCollisions()"
         }
 
         public override void Tick()
         {
-            bool below = player.controller.collisions[1][-1]?.collider.Equals(platform) ?? false;
-            bool side = player.controller.collisions[0][player.facing]?.collider.Equals(platform) ?? false;
+            bool below = entity.controller.collisions[1][-1]?.collider.Equals(platform) ?? false;
+            bool side = entity.controller.collisions[0][entity.facing]?.collider.Equals(platform) ?? false;
 
             if (!below && !side)
             {
-                player.currentState.SetState(new Falling(player));
+                entity.StateMachine.SetState("Falling");
             }
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
             Debug.Log("Entered: Descending Platform");
 
-            platform = player.controller.collisions[1][-1].Value.collider;
+            platform = entity.controller.collisions[1][-1].Value.collider;
 
-            player.animator.Play(AnimName);
+            entity.animator.Play(AnimName);
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
             Debug.Log("Exited: Descending Platform");
         }

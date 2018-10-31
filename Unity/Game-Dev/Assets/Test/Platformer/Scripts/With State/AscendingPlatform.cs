@@ -1,46 +1,41 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using FSMRev3;
 
-namespace FSM
+namespace PlatformerFSM
 {
-    public class AscendingPlatform : State
+    public class AscendingPlatform : State<Player>, ICoreState
     {
-        public override Type TSuperstate => typeof(Airborne);
-        public override string AnimName => "jumping";
+        public string AnimName => "jumping";
+        public bool CollisionsEnabled => false;
 
         private Collider2D platform;
 
-        public AscendingPlatform(Player player) : base(player)
+        public AscendingPlatform(Player entity) : base(entity)
         {
 
-        }
-
-        protected override void CollisionHandler(int component, int dir, RaycastHit2D hit)
-        {
-            // maybe just have a bool condition for disabling "HandleCollisions()"
         }
 
         public override void Tick()
         {
-            bool above = player.controller.collisions[1][1]?.collider.Equals(platform) ?? false;
-            bool side = player.controller.collisions[0][player.facing]?.collider.Equals(platform) ?? false;
+            bool above = entity.controller.collisions[1][1]?.collider.Equals(platform) ?? false;
+            bool side = entity.controller.collisions[0][entity.facing]?.collider.Equals(platform) ?? false;
 
             if (!above && !side)
             {
-                player.currentState.SetState(new Falling(player)); // need pushdown automata to resume Jumping state without actually jumping
+                entity.StateMachine.SetState("Falling"); // need pushdown automata to resume Jumping state without actually jumping
             }
         }
 
-        public override void OnStateEnter()
+        public override void OnEnter()
         {
             Debug.Log("Entered: Ascending Platform");
 
-            platform = player.controller.collisions[1][1].Value.collider;
+            platform = entity.controller.collisions[1][1].Value.collider;
 
-            player.animator.Play(AnimName);
+            entity.animator.Play(AnimName);
         }
 
-        public override void OnStateExit()
+        public override void OnExit()
         {
             Debug.Log("Exited: Ascending Platform");
         }
