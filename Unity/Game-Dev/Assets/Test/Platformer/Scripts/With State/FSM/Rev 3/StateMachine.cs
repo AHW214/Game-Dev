@@ -86,31 +86,24 @@ namespace FSMRev3
             }           
         }
 
-        public StateInfo<T> AddState(params State<T>[] states)
+        public StateInfo<T>[] AddState(State<T> parent, params State<T>[] children)
         {
-            if (states.Length == 0)
+            StateInfo<T> parentStateInfo = AddState(parent);
+
+            StateInfo<T>[] stateInfos = new StateInfo<T>[children.Length];
+            for (int i = 0; i < stateInfos.Length; i++)
             {
-                return null;
-            }
-
-            StateInfo<T> stateInfo = AddState(states[states.Length - 1]);
-
-            StateInfo<T> parentStateInfo;
-            for (int i = states.Length - 2; i >= 0; i--)
-            {
-                parentStateInfo = mStateDict[states[i + 1].Name];
-
-                stateInfo = AddState(states[i]);
-                if ((stateInfo.parentStateInfo != null) &&
-                    (stateInfo.parentStateInfo != parentStateInfo))
+                stateInfos[i] = AddState(children[i]);
+                if ((stateInfos[i].parentStateInfo != null) &&
+                    (stateInfos[i].parentStateInfo != parentStateInfo))
                 {
                     throw new Exception("State already added.");
                 }
 
-                stateInfo.parentStateInfo = parentStateInfo;
+                stateInfos[i].parentStateInfo = parentStateInfo;
             }
 
-            return stateInfo;
+            return stateInfos;
         }
 
         public StateInfo<T> AddState(State<T> state)

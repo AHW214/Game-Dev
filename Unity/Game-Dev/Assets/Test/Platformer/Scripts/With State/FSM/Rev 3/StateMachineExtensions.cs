@@ -6,30 +6,13 @@ namespace FSMRev3
     {
         public static void Initialize(this StateMachine<Player> stateMachine, Player player)
         {
-            Idle idle = new Idle(player);
-            Walking walking = new Walking(player);            
-            Grounded grounded = new Grounded(player);
+            stateMachine.AddState(new Grounded(player), new Idle(player), new Walking(player));
 
-            Falling falling = new Falling(player);
-            Jumping jumping = new Jumping(player);
-            WallSliding wallSliding = new WallSliding(player);
-            WallJumping wallJumping = new WallJumping(player);
-            Airborne airborne = new Airborne(player);
+            stateMachine.AddState(new Airborne(player), new Falling(player), 
+                new Jumping(player), new WallSliding(player), new WallJumping(player));
 
-            AscendingPlatform ascendingPlatform = new AscendingPlatform(player);
-            DescendingPlatform descendingPlatform = new DescendingPlatform(player);
-
-
-            stateMachine.AddState(idle, grounded);
-            stateMachine.AddState(walking, grounded);
-
-            stateMachine.AddState(falling, airborne);
-            stateMachine.AddState(jumping, airborne);
-            stateMachine.AddState(wallSliding, airborne);
-            stateMachine.AddState(wallJumping, airborne);
-
-            stateMachine.AddState(ascendingPlatform);
-            stateMachine.AddState(descendingPlatform);
+            stateMachine.AddState(new AscendingPlatform(player));
+            stateMachine.AddState(new DescendingPlatform(player));
 
             stateMachine.SetState("Idle");
             stateMachine.Start();
