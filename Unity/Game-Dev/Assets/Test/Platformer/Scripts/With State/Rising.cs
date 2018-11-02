@@ -3,12 +3,12 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class Jumping : State<Player>, ICoreState
+    public class Rising : State<Player>, ICoreState
     {
         public string AnimName => "jumping";
         public bool CollisionsEnabled => true;
 
-        public Jumping(Player entity) : base(entity)
+        public Rising(Player entity) : base(entity)
         {
 
         }
@@ -27,15 +27,14 @@ namespace PlatformerFSM
         }
 
         public override void OnEnter()
-        {
-            entity.velocity.y = entity.jumpVelocityRange[1];
-            Debug.Log("Entered: Jumping");
+        {          
+            Debug.Log("Entered: Rising");
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Jumping");
+            Debug.Log("Exited: Rising");
         }
     }
 }

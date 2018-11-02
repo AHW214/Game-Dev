@@ -28,12 +28,7 @@ namespace PlatformerFSM
                 {
                     entity.StateMachine.SetState("Idle");
                 }              
-            }
-
-            else if (entity.input.x != 0 && entity.controller.collisions[0][entity.facing] != null)
-            {
-                entity.StateMachine.SetState("WallSliding");
-            }
+            }           
         }
 
         public override void OnEnter()

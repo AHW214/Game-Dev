@@ -8,6 +8,9 @@ namespace PlatformerFSM
         public string AnimName => "idle";
         public bool CollisionsEnabled => true;
 
+        private float timeToUnstick;
+        private int wallFacing;
+
         public WallSliding(Player player) : base(player)
         {
 
@@ -20,19 +23,33 @@ namespace PlatformerFSM
                 entity.StateMachine.SetState("Idle");
             }
 
-            else if (Input.GetKeyDown(KeyCode.Space))
-            {
-                entity.StateMachine.SetState("WallJumping");
-            }
-
-            else if (entity.input.x == 0 || entity.controller.collisions[0][entity.facing] == null)
+            else if (entity.controller.collisions[0][wallFacing] == null)
             {
                 entity.StateMachine.SetState("Falling");
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                entity.velocity = new Vector2(-wallFacing * entity.wallJumpVector.x, entity.wallJumpVector.y);
+                entity.StateMachine.SetState("Rising");
             }
 
             else
             {
                 entity.velocity.y = Mathf.Max(entity.velocity.y, -entity.maxWallslideSpeed);
+
+                if (timeToUnstick > 0)
+                {
+                    entity.velocity.x = wallFacing;
+
+                    timeToUnstick = (entity.input.x == 0 || entity.facing != wallFacing) 
+                                  ? timeToUnstick - Time.deltaTime : entity.wallStickTime;
+                }
+
+                else
+                {
+                    entity.StateMachine.SetState("Falling");
+                }               
             }           
         }
 
@@ -40,6 +57,9 @@ namespace PlatformerFSM
         {
             Debug.Log("Entered: Wallsliding");
             entity.animator.Play(AnimName);
+
+            timeToUnstick = entity.wallStickTime;
+            wallFacing = entity.facing;
         }
 
         public override void OnExit()

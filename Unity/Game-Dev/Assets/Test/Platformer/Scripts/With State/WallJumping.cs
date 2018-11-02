@@ -33,9 +33,11 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
-            entity.velocity = new Vector2(-entity.facing * 10, entity.jumpVelocityRange[0]); //jank
-            Debug.Log("Entered: WallJumping");
+            entity.velocity = new Vector2(-entity.facing * entity.wallJumpVector.x, entity.wallJumpVector.y);
+          
             entity.animator.Play(AnimName);
+
+            Debug.Log("Entered: WallJumping");
         }
 
         public override void OnExit()

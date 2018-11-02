@@ -19,7 +19,8 @@ namespace PlatformerFSM
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                entity.StateMachine.SetState("Jumping");
+                entity.velocity.y = entity.jumpVelocityRange[1];
+                entity.StateMachine.SetState("Rising");
             }
 
             else if (entity.input.y < 0 && (entity.controller.collisions[1][-1]?.collider.CompareTag("One Way Platform") ?? false))

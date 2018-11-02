@@ -22,7 +22,7 @@ namespace PlatformerFSM
 
             if (!above && !side)
             {
-                entity.StateMachine.SetState("Falling"); // need pushdown automata to resume Jumping state without actually jumping
+                entity.StateMachine.SetState("Rising");
             }
         }
 
@@ -31,7 +31,6 @@ namespace PlatformerFSM
             Debug.Log("Entered: Ascending Platform");
 
             platform = entity.controller.collisions[1][1].Value.collider;
-
             entity.animator.Play(AnimName);
         }
 

@@ -7,8 +7,10 @@ namespace PlatformerFSM
     public class Player : MonoBehaviour
     {
         public Vector2 jumpHeightRange = new Vector2(1, 4);
+        public Vector2 wallJumpVector = new Vector2(3.75F, 11.0F);
         public float timeToJumpApex = 0.4F;
         public float maxWallslideSpeed = 0.7F;
+        public float wallStickTime = 0.1F;
         public float accelerationTimeAirborne = 0.2F;
         public float accelerationTimeGrounded = 0.1F;
         public float movementSpeed = 6;
@@ -22,7 +24,7 @@ namespace PlatformerFSM
         internal Vector2 jumpVelocityRange;
 
         private float gravity;     
-        private float velocityXSmoothing;
+        private float velocityXSmoothing; // need to zero this value when externally zeroing the velocity x component (public property setter might work?)
 
         private SpriteRenderer spriteRenderer;
         internal Animator animator;
@@ -51,17 +53,17 @@ namespace PlatformerFSM
             FaceForward();
             CalculateVelocity();
 
+            StateMachine.Tick();
+
             displacement = velocity * Time.deltaTime;
             controller.DetectCollisions(displacement);
 
-            if ((StateMachine.CurrentState as ICoreState).CollisionsEnabled)
+            if ((StateMachine.CurrentState as ICoreState).CollisionsEnabled) // need to change function call order to prevent "race conditions" (see Ascending Platform for example)
             {
                 controller.HandleCollisions();
             }
 
-            transform.Translate(displacement);
-
-            StateMachine.Tick();           
+            transform.Translate(displacement);                 
         }
 
         private void CalculateVelocity()
