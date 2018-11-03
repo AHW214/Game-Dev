@@ -12,7 +12,7 @@ namespace PlatformerFSM
 
         public override void Tick()
         {
-            if (!entity.controller.collisions.Grounded)
+            if (!entity.controller.collisions.Below)
             {
                 entity.StateMachine.SetState("Falling");
             }
@@ -31,6 +31,8 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
+            entity.accelerationTime = entity.accelerationTimeGrounded;
+
             Debug.Log("Enter: Grounded");
         }
 

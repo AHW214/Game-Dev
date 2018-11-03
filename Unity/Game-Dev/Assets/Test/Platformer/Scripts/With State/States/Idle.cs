@@ -15,10 +15,15 @@ namespace PlatformerFSM
 
         public override void Tick()
         {
-            if (Mathf.Abs(entity.displacement.x) > 1E-3)
+            if (entity.input.y < 0)
+            {
+                entity.StateMachine.SetState("Crouching");
+            }
+
+            else if (entity.input.x != 0 && !entity.controller.collisions.Horizontal)
             {
                 entity.StateMachine.SetState("Walking");
-            }
+            }          
         }
 
         public override void OnEnter()

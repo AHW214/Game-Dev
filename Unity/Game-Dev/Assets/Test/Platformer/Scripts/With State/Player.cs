@@ -13,9 +13,12 @@ namespace PlatformerFSM
         public float wallStickTime = 0.1F;
         public float accelerationTimeAirborne = 0.2F;
         public float accelerationTimeGrounded = 0.1F;
-        public float movementSpeed = 6;
+        public float normalSpeed = 6;
+        public float runSpeed = 9;
 
         internal int facing = 1;
+        internal float movementSpeed = 6;
+        internal float accelerationTime = 0;
 
         internal Vector2 input;
         internal Vector2 velocity;
@@ -69,8 +72,7 @@ namespace PlatformerFSM
         private void CalculateVelocity()
         {
             float targetVelocityX = input.x * movementSpeed;
-            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing,
-                                          controller.collisions.Grounded ? accelerationTimeGrounded : accelerationTimeAirborne);
+            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, accelerationTime);
 
             velocity.y += gravity * Time.deltaTime;
         }

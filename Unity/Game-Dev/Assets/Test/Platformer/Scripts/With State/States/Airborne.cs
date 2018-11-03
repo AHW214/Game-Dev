@@ -15,7 +15,7 @@ namespace PlatformerFSM
         public override void Tick()
         {
             if (entity.input.x != 0 && (wallNormal = entity.controller.collisions[0][entity.facing]?.normal) != null
-                && Vector2.Angle(wallNormal.Value, Vector2.up) == 90)
+                && Mathf.Approximately(Vector2.Angle(wallNormal.Value, Vector2.up), 90))
             {
                 entity.StateMachine.SetState("WallSliding");
             }
@@ -23,6 +23,9 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
+            entity.movementSpeed = entity.normalSpeed;
+            entity.accelerationTime = entity.accelerationTimeAirborne;
+
             Debug.Log("Enter: Airborne");
         }
 

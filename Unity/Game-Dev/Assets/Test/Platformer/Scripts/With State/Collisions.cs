@@ -33,24 +33,18 @@ namespace PlatformerFSM
             components[index][-1] = null;
         }
 
-        public IDictionary<int, RaycastHit2D?> X
-        {
-            get { return components[0]; }
-        }
+        public IDictionary<int, RaycastHit2D?> X => components[0];
+        public IDictionary<int, RaycastHit2D?> Y => components[1];
 
-        public IDictionary<int, RaycastHit2D?> Y
-        {
-            get { return components[1]; }
-        }
+        public IDictionary<int, RaycastHit2D?> this[int index] => components[index];
 
-        public IDictionary<int, RaycastHit2D?> this[int index]
-        {
-            get { return components[index]; }
-        }
+        public bool Right => X[1]  != null;
+        public bool Left  => X[-1] != null;
 
-        public bool Grounded
-        {
-            get { return components[1][-1] != null; }
-        }
+        public bool Above => Y[1]  != null;
+        public bool Below => Y[-1] != null;
+
+        public bool Horizontal => Right || Left;
+        public bool Vertical   => Above || Below;
     }
 }

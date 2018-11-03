@@ -24,6 +24,11 @@ namespace PlatformerFSM
             {
                 entity.StateMachine.SetState("Falling");
             }
+
+            else if (Input.GetKeyUp(KeyCode.Space))
+            {
+                entity.velocity.y = Mathf.Min(entity.velocity.y, entity.jumpVelocityRange[0]); // should this apply to walljumping?
+            }
         }
 
         public override void OnEnter()
