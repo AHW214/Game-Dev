@@ -30,14 +30,12 @@ namespace PlatformerFSM
         public override void OnEnter()
         {
             entity.movementSpeed = 0;
-            entity.animator.Play(AnimName);
-
-            Debug.Log("Enter: Crouching");           
+            entity.animator.Play(AnimName);          
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Crouching");
+
         }
     }
 }

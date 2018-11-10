@@ -35,13 +35,11 @@ namespace PlatformerFSM
         {
             entity.movementSpeed = entity.runSpeed;
             entity.animator.Play(AnimName);
-
-            Debug.Log("Enter: Running");
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Running");
+ 
         }
     }
 }

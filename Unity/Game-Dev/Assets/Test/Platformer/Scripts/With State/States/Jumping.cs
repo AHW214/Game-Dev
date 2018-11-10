@@ -29,13 +29,12 @@ namespace PlatformerFSM
         public override void OnEnter()
         {
             entity.velocity.y = entity.jumpVelocityRange[1];
-            Debug.Log("Entered: Jumping");
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Jumping");
+
         }
     }
 }

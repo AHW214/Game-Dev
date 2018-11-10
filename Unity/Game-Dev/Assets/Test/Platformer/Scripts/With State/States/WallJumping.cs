@@ -36,13 +36,11 @@ namespace PlatformerFSM
             entity.velocity = new Vector2(-entity.facing * entity.wallJumpVector.x, entity.wallJumpVector.y);
           
             entity.animator.Play(AnimName);
-
-            Debug.Log("Entered: WallJumping");
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: WallJumping");
+
         }
     }
 }

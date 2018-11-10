@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace FSMRev3
 {
@@ -15,6 +16,8 @@ namespace FSMRev3
 
         public StateInfo<T> CurrentStateInfo => mStateStack.Peek();
         public State<T> CurrentState => CurrentStateInfo.state;
+
+        public bool LogTransitions = false;
 
         private void SetupInitialStateStack()
         {
@@ -74,15 +77,25 @@ namespace FSMRev3
 
                     curStateInfo.state.OnExit();
                     curStateInfo.active = false;
+
+                    if (LogTransitions)
+                    {
+                        Debug.Log($"Exited: {curStateInfo.state.Name}");
+                    }
                 }
+
+                MoveTempStack();
 
                 foreach (StateInfo<T> stateInfo in mTempStateStack)
                 {
                     stateInfo.state.OnEnter();
                     stateInfo.active = true;
-                }
 
-                MoveTempStack();             
+                    if (LogTransitions)
+                    {
+                        Debug.Log($"Entered: {stateInfo.state.Name}");
+                    }
+                }                             
             }           
         }
 

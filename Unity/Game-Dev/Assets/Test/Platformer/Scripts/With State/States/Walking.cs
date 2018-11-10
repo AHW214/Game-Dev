@@ -35,13 +35,11 @@ namespace PlatformerFSM
         {
             entity.movementSpeed = entity.normalSpeed;
             entity.animator.Play(AnimName);
-
-            Debug.Log("Enter: Walking");
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Walking");
+
         }
     }
 }

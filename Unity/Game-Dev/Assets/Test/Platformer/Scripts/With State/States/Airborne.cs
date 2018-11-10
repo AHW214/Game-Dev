@@ -26,12 +26,12 @@ namespace PlatformerFSM
             entity.movementSpeed = entity.normalSpeed;
             entity.accelerationTime = entity.accelerationTimeAirborne;
 
-            Debug.Log("Enter: Airborne");
+            entity.StateMachine.SetState(entity.velocity.y > 0 ? "Rising" : "Falling");
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Airborne");
+
         }
     }
 }

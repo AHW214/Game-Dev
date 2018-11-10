@@ -26,20 +26,24 @@ namespace PlatformerFSM
 
                 else
                 {
-                    entity.StateMachine.SetState("Idle");
+                    entity.StateMachine.SetState("Grounded");
                 }              
-            }           
+            }
+            
+            else if (entity.velocity.y < -15)
+            {
+                entity.animator.Play("long fall");
+            }
         }
 
         public override void OnEnter()
         {
-            Debug.Log("Entered: Falling");
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Falling");
+
         }
     }
 }

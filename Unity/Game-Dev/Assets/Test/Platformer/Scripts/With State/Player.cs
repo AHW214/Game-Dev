@@ -16,6 +16,8 @@ namespace PlatformerFSM
         public float normalSpeed = 6;
         public float runSpeed = 9;
 
+        public bool LogState = false;
+
         internal int facing = 1;
         internal float movementSpeed = 6;
         internal float accelerationTime = 0;

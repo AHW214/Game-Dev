@@ -16,6 +16,7 @@ namespace FSMRev3
             stateMachine.AddState(new AscendingPlatform(player));
             stateMachine.AddState(new DescendingPlatform(player));
 
+            stateMachine.LogTransitions = player.LogState;
             stateMachine.SetState("Idle");
             stateMachine.Start();
         }

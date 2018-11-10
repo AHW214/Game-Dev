@@ -28,13 +28,12 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
-            Debug.Log("Enter: Idle");
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Idle");
+
         }
     }
 }

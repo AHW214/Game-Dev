@@ -14,13 +14,13 @@ namespace PlatformerFSM
         {
             if (!entity.controller.collisions.Below)
             {
-                entity.StateMachine.SetState("Falling");
+                entity.StateMachine.SetState("Airborne");
             }
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
                 entity.velocity.y = entity.jumpVelocityRange[1];
-                entity.StateMachine.SetState("Rising");
+                entity.StateMachine.SetState("Airborne");
             }
 
             else if (entity.input.y < 0 && (entity.controller.collisions[1][-1]?.collider.CompareTag("One Way Platform") ?? false))
@@ -33,12 +33,20 @@ namespace PlatformerFSM
         {
             entity.accelerationTime = entity.accelerationTimeGrounded;
 
-            Debug.Log("Enter: Grounded");
+            if (entity.input.x != 0)
+            {
+                entity.StateMachine.SetState(Input.GetKey(KeyCode.LeftShift) ? "Running" : "Walking");               
+            }
+
+            else 
+            {
+                entity.StateMachine.SetState(entity.input.y < 0 ? "Crouching" : "Idle");
+            }
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Grounded");
+
         }
     }
 }

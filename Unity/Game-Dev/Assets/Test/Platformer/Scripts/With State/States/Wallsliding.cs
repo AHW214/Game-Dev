@@ -55,7 +55,6 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
-            Debug.Log("Entered: Wallsliding");
             entity.animator.Play(AnimName);
 
             timeToUnstick = entity.wallStickTime;
@@ -64,7 +63,7 @@ namespace PlatformerFSM
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Wallsliding");
+
         }
     }
 }

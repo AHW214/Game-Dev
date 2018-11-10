@@ -33,13 +33,12 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {          
-            Debug.Log("Entered: Rising");
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Rising");
+
         }
     }
 }

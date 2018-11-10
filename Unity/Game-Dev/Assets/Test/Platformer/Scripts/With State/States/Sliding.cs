@@ -26,13 +26,11 @@ namespace PlatformerFSM
         public override void OnEnter()
         {
             entity.animator.Play(AnimName);
-
-            Debug.Log("Enter: Sliding");
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Sliding");
+
         }
     }
 }
