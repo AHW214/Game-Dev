@@ -18,6 +18,8 @@ namespace PlatformerFSM
 
         public bool LogState = false;
 
+        internal bool facingLocked = false;
+
         internal int facing = 1;
         internal float movementSpeed = 6;
         internal float accelerationTime = 0;
@@ -55,7 +57,11 @@ namespace PlatformerFSM
         {
             input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-            FaceForward();
+            if (!facingLocked)
+            {
+                FaceForward();
+            }
+            
             CalculateVelocity();
 
             StateMachine.Tick();

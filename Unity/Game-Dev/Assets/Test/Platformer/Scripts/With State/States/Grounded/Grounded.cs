@@ -33,15 +33,7 @@ namespace PlatformerFSM
         {
             entity.accelerationTime = entity.accelerationTimeGrounded;
 
-            if (entity.input.x != 0)
-            {
-                entity.StateMachine.SetState(Input.GetKey(KeyCode.LeftShift) ? "Running" : "Walking");               
-            }
-
-            else 
-            {
-                entity.StateMachine.SetState(entity.input.y < 0 ? "Crouching" : "Idle");
-            }
+            entity.StateMachine.SetState(entity.input.y < 0 ? "Crouching" : "Standing");           
         }
 
         public override void OnExit()

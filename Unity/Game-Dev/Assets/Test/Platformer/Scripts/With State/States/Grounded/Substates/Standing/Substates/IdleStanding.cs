@@ -1,28 +1,22 @@
-﻿using UnityEngine;
-using FSMRev3;
+﻿using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class Idle : State<Player>, ICoreState
+    public class IdleStanding : State<Player>, ICoreState
     {
         public string AnimName => "idle";
         public bool CollisionsEnabled => true;
 
-        public Idle(Player entity) : base(entity)
+        public IdleStanding(Player entity) : base(entity)
         {
 
         }
 
         public override void Tick()
         {
-            if (entity.input.y < 0)
+            if (entity.input.x != 0 && !entity.controller.collisions.Horizontal)
             {
-                entity.StateMachine.SetState("Crouching");
-            }
-
-            else if (entity.input.x != 0 && !entity.controller.collisions.Horizontal)
-            {
-                entity.StateMachine.SetState("Walking");
+                entity.StateMachine.SetState("Moving");
             }          
         }
 

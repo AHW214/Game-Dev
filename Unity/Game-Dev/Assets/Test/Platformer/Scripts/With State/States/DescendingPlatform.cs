@@ -22,14 +22,12 @@ namespace PlatformerFSM
 
             if (!below && !side)
             {
-                entity.StateMachine.SetState("Falling");
+                entity.StateMachine.SetState("Airborne");
             }
         }
 
         public override void OnEnter()
         {
-            Debug.Log("Entered: Descending Platform");
-
             platform = entity.controller.collisions[1][-1].Value.collider;
 
             entity.animator.Play(AnimName);
@@ -37,7 +35,7 @@ namespace PlatformerFSM
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Descending Platform");
+
         }
     }
 }

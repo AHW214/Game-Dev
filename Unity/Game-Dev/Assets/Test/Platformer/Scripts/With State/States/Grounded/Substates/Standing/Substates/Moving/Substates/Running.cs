@@ -3,34 +3,33 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class Sliding : State<Player>, ICoreState
+    public class Running : State<Player>, ICoreState
     {
-        public string AnimName => "sliding";
+        public string AnimName => "running";
         public bool CollisionsEnabled => true;
 
-        public Sliding(Player entity) : base(entity)
+        public Running(Player entity) : base(entity)
         {
 
         }
 
         public override void Tick()
         {
-            Debug.Log(entity.animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
-
-            if (entity.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+            if (Input.GetKeyUp(KeyCode.LeftShift))
             {
-                entity.StateMachine.SetState("Crouching");
+                entity.StateMachine.SetState("Walking");
             }
         }
 
         public override void OnEnter()
         {
+            entity.movementSpeed = entity.runSpeed;
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-
+ 
         }
     }
 }

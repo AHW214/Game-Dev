@@ -22,21 +22,19 @@ namespace PlatformerFSM
 
             if (!above && !side)
             {
-                entity.StateMachine.SetState("Rising");
+                entity.StateMachine.SetState("Airborne");
             }
         }
 
         public override void OnEnter()
         {
-            Debug.Log("Entered: Ascending Platform");
-
             platform = entity.controller.collisions[1][1].Value.collider;
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-            Debug.Log("Exited: Ascending Platform");
+
         }
     }
 }

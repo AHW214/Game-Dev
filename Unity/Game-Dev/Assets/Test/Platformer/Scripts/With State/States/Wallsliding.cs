@@ -5,7 +5,7 @@ namespace PlatformerFSM
 {
     public class WallSliding : State<Player>, ICoreState
     {
-        public string AnimName => "idle";
+        public string AnimName => "wallsliding";
         public bool CollisionsEnabled => true;
 
         private float timeToUnstick;
@@ -20,18 +20,18 @@ namespace PlatformerFSM
         {
             if (entity.controller.collisions[1][-1] != null)
             {
-                entity.StateMachine.SetState("Idle");
+                entity.StateMachine.SetState("Grounded");
             }
 
             else if (entity.controller.collisions[0][wallFacing] == null)
             {
-                entity.StateMachine.SetState("Falling");
+                entity.StateMachine.SetState("Airborne");
             }
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
                 entity.velocity = new Vector2(-wallFacing * entity.wallJumpVector.x, entity.wallJumpVector.y);
-                entity.StateMachine.SetState("Rising");
+                entity.StateMachine.SetState("Airborne");
             }
 
             else
@@ -48,7 +48,7 @@ namespace PlatformerFSM
 
                 else
                 {
-                    entity.StateMachine.SetState("Falling");
+                    entity.StateMachine.SetState("Airborne");
                 }               
             }           
         }

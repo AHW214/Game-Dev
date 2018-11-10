@@ -19,6 +19,11 @@ namespace PlatformerFSM
             {
                 entity.StateMachine.SetState("WallSliding");
             }
+
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                entity.StateMachine.SetState("Dashing");
+            }
         }
 
         public override void OnEnter()
