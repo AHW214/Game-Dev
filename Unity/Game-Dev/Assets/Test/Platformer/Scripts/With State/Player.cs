@@ -37,7 +37,7 @@ namespace PlatformerFSM
         internal Animator animator;
         internal Controller2D controller;
 
-        public StateMachine<Player> StateMachine { get; private set; } = new StateMachine<Player>();
+        public StateMachine<Player> StateMachine => new StateMachine<Player>();
                               
         private void Awake()
         {
