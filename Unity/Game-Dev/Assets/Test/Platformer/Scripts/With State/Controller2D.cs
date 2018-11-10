@@ -17,7 +17,7 @@ namespace PlatformerFSM
         private readonly int[] rayCounts = new int[2];
         private readonly float[] raySpacings = new float[2];
 
-        private void Start()
+        private void Awake()
         {
             collider = GetComponent<Collider2D>();
             player = GetComponent<Player>();

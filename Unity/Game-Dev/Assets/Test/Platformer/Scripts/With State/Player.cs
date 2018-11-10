@@ -39,7 +39,7 @@ namespace PlatformerFSM
 
         public StateMachine<Player> StateMachine { get; private set; } = new StateMachine<Player>();
                               
-        private void Start()
+        private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();           
