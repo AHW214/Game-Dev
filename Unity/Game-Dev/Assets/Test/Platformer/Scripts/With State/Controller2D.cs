@@ -60,7 +60,7 @@ namespace PlatformerFSM
                         float disp = hit.Value.distance - skinWidth;
 
                         player.displacement[i] = dir * disp;
-                        player.velocity[i] = 0; //race condition with checking if current state has collisions enabled FIX                           
+                        player.velocity[i] = dir * Mathf.Min(dir * player.velocity[i], 0);                         
                     }
                 }
             }

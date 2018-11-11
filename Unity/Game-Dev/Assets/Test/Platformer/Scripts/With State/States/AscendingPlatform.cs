@@ -29,12 +29,14 @@ namespace PlatformerFSM
         public override void OnEnter()
         {
             platform = entity.controller.collisions[1][1].Value.collider;
+
+            entity.EnableCollisions(false);
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-
+            entity.EnableCollisions();
         }
     }
 }

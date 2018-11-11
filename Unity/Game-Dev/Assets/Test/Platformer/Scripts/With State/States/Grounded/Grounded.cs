@@ -25,7 +25,8 @@ namespace PlatformerFSM
 
             else if (entity.input.y < 0 && (entity.controller.collisions[1][-1]?.collider.CompareTag("One Way Platform") ?? false))
             {
-                entity.StateMachine.SetState("DescendingPlatform");
+                entity.animator.Play("falling");
+                entity.StateMachine.SetState("OneWayPlatform");
             }          
         }
 

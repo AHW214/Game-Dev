@@ -46,5 +46,21 @@ namespace PlatformerFSM
 
         public bool Horizontal => Right || Left;
         public bool Vertical   => Above || Below;
+
+        public bool Contains(Collider2D collider)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (int dir in components[i].Keys)
+                {
+                    if (components[i][dir]?.collider == collider)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

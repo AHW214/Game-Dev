@@ -15,9 +15,6 @@ namespace PlatformerFSM
 
         public override void Tick()
         {
-            entity.velocity.y = 0;
-            entity.velocity.x = entity.facing * 20;
-
             if (entity.controller.collisions.Horizontal)
             {
                 entity.animator.Play("falling");
@@ -25,23 +22,32 @@ namespace PlatformerFSM
                 entity.StateMachine.SetState("Airborne");
             }
 
-            if (entity.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+            else if (entity.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
             {
                 entity.StateMachine.SetState(entity.controller.collisions.Below ? "Grounded" : "Airborne");
+            }
+
+            else
+            {
+                entity.velocity.y = 0;
+                entity.velocity.x = entity.facing * 20;
             }
         }
 
         public override void OnEnter()
         {
             entity.movementSpeed = 0;
-            entity.facingLocked = true;
+
+            entity.LockFacing();
+            entity.LockVelocity();
 
             entity.animator.Play(AnimName);
         }
 
         public override void OnExit()
         {
-            entity.facingLocked = false;
+            entity.LockFacing(false);
+            entity.LockVelocity(false);
         }
     }
 }

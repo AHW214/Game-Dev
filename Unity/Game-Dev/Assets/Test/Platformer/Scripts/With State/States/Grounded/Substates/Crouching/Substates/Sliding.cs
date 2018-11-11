@@ -22,7 +22,7 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
-            entity.facingLocked = true;
+            entity.LockFacing();
 
             entity.velocity.x = entity.facing * 20;
             entity.animator.Play(AnimName);
@@ -30,7 +30,7 @@ namespace PlatformerFSM
 
         public override void OnExit()
         {
-            entity.facingLocked = false;
+            entity.LockFacing(false);
         }
     }
 }

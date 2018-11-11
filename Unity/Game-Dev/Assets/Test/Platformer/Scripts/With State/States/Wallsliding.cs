@@ -40,7 +40,7 @@ namespace PlatformerFSM
 
                 if (timeToUnstick > 0)
                 {
-                    entity.velocity.x = wallFacing;
+                    entity.velocity.x = wallFacing; //fix
 
                     timeToUnstick = (entity.input.x == 0 || entity.facing != wallFacing) 
                                   ? timeToUnstick - Time.deltaTime : entity.wallStickTime;

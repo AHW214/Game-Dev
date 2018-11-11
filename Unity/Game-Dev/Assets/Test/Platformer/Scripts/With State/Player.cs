@@ -9,16 +9,17 @@ namespace PlatformerFSM
         public Vector2 jumpHeightRange = new Vector2(1, 4);
         public Vector2 wallJumpVector = new Vector2(3.75F, 11.0F);
         public float timeToJumpApex = 0.4F;
+
         public float maxWallslideSpeed = 0.7F;
         public float wallStickTime = 0.1F;
+
         public float accelerationTimeAirborne = 0.2F;
         public float accelerationTimeGrounded = 0.1F;
+
         public float normalSpeed = 6;
         public float runSpeed = 9;
 
         public bool LogState = false;
-
-        internal bool facingLocked = false;
 
         internal int facing = 1;
         internal float movementSpeed = 6;
@@ -29,6 +30,10 @@ namespace PlatformerFSM
         internal Vector2 displacement;
 
         internal Vector2 jumpVelocityRange;
+
+        private bool collisionsEnabled = true;
+        private bool velocityLocked = false;
+        private bool facingLocked = false;
 
         private float gravity;     
         private float velocityXSmoothing; // need to zero this value when externally zeroing the velocity x component (public property setter might work?)
@@ -62,14 +67,17 @@ namespace PlatformerFSM
                 FaceForward();
             }
             
-            CalculateVelocity();
-
-            StateMachine.Tick();
+            if (!velocityLocked)
+            {
+                CalculateVelocity();
+            }           
 
             displacement = velocity * Time.deltaTime;
             controller.DetectCollisions(displacement);
 
-            if ((StateMachine.CurrentState as ICoreState).CollisionsEnabled) // need to change function call order to prevent "race conditions" (see Ascending Platform for example)
+            StateMachine.Tick();
+
+            if (collisionsEnabled) 
             {
                 controller.HandleCollisions();
             }
@@ -95,6 +103,10 @@ namespace PlatformerFSM
                 spriteRenderer.flipX = !spriteRenderer.flipX;
             }
         }
+
+        public void EnableCollisions(bool value = true) => collisionsEnabled = value;
+        public void LockVelocity(bool value = true) => velocityLocked = value;
+        public void LockFacing(bool value = true) => facingLocked = value;
     }
 }
 

@@ -21,7 +21,7 @@ namespace PlatformerFSM
             {
                 if (entity.input.y < 0 && platform.CompareTag("One Way Platform"))
                 {
-                    entity.StateMachine.SetState("DescendingPlatform");
+                    entity.StateMachine.SetState("OneWayPlatform");
                 }
 
                 else

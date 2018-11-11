@@ -17,8 +17,7 @@ namespace FSMRev3
 
             stateMachine.AddState(new WallSliding(player));
 
-            stateMachine.AddState(new AscendingPlatform(player));
-            stateMachine.AddState(new DescendingPlatform(player));
+            stateMachine.AddState(new OneWayPlatform(player));
 
             stateMachine.LogTransitions = player.LogState;
             stateMachine.SetState("IdleStanding");
