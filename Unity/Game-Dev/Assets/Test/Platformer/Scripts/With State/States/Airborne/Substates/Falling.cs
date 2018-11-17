@@ -3,11 +3,8 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class Falling : State<Player>, ICoreState
+    public class Falling : State<Player>
     {
-        public string AnimName => "falling";
-        public bool CollisionsEnabled => true;
-
         private Collider2D platform;
 
         public Falling(Player entity) : base(entity)
@@ -38,7 +35,7 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
-            entity.animator.Play(AnimName);
+            entity.animator.Play("falling");
         }
 
         public override void OnExit()

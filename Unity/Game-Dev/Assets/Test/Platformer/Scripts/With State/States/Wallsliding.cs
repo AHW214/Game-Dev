@@ -3,11 +3,8 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class WallSliding : State<Player>, ICoreState
+    public class WallSliding : State<Player>
     {
-        public string AnimName => "wallsliding";
-        public bool CollisionsEnabled => true;
-
         private float timeToUnstick;
         private int wallFacing;
 
@@ -18,6 +15,11 @@ namespace PlatformerFSM
 
         public override void Tick()
         {
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                entity.velocity.y = Mathf.Min(entity.velocity.y, entity.jumpVelocityRange[0]);
+            }
+
             if (entity.controller.collisions[1][-1] != null)
             {
                 entity.StateMachine.SetState("Grounded");
@@ -34,36 +36,32 @@ namespace PlatformerFSM
                 entity.StateMachine.SetState("Airborne");
             }
 
-            else
+            else if (timeToUnstick > 0)
             {
                 entity.velocity.y = Mathf.Max(entity.velocity.y, -entity.maxWallslideSpeed);
 
-                if (timeToUnstick > 0)
-                {
-                    entity.velocity.x = wallFacing; //fix
+                timeToUnstick = (entity.input.x == 0 || entity.facing != wallFacing) 
+                                ? timeToUnstick - Time.deltaTime : entity.wallStickTime;            
+            }
 
-                    timeToUnstick = (entity.input.x == 0 || entity.facing != wallFacing) 
-                                  ? timeToUnstick - Time.deltaTime : entity.wallStickTime;
-                }
-
-                else
-                {
-                    entity.StateMachine.SetState("Airborne");
-                }               
-            }           
+            else
+            {
+                entity.StateMachine.SetState("Airborne");
+            }
         }
 
         public override void OnEnter()
         {
-            entity.animator.Play(AnimName);
-
             timeToUnstick = entity.wallStickTime;
             wallFacing = entity.facing;
+            
+            entity.LockVelocityX(wallFacing);
+            entity.animator.Play("wallsliding");           
         }
 
         public override void OnExit()
         {
-
+            entity.LockVelocityX(false);
         }
     }
 }

@@ -3,11 +3,8 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class Running : State<Player>, ICoreState
+    public class Running : State<Player>
     {
-        public string AnimName => "running";
-        public bool CollisionsEnabled => true;
-
         public Running(Player entity) : base(entity)
         {
 
@@ -24,7 +21,7 @@ namespace PlatformerFSM
         public override void OnEnter()
         {
             entity.movementSpeed = entity.runSpeed;
-            entity.animator.Play(AnimName);
+            entity.animator.Play("running");
         }
 
         public override void OnExit()

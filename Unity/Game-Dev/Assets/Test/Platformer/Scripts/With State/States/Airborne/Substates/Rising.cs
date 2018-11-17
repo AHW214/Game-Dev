@@ -3,11 +3,8 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class Rising : State<Player>, ICoreState
+    public class Rising : State<Player>
     {
-        public string AnimName => "jumping";
-        public bool CollisionsEnabled => true;
-
         public Rising(Player entity) : base(entity)
         {
 
@@ -33,7 +30,7 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {          
-            entity.animator.Play(AnimName);
+            entity.animator.Play("jumping");
         }
 
         public override void OnExit()

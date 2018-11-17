@@ -60,7 +60,11 @@ namespace PlatformerFSM
                         float disp = hit.Value.distance - skinWidth;
 
                         player.displacement[i] = dir * disp;
-                        player.velocity[i] = dir * Mathf.Min(dir * player.velocity[i], 0);                         
+
+                        if (!player.velocityLocked[i])
+                        {
+                            player.velocity[i] = dir * Mathf.Min(dir * player.velocity[i], 0);
+                        }                                                 
                     }
                 }
             }

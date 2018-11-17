@@ -3,11 +3,8 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class Dashing : State<Player>, ICoreState
+    public class Dashing : State<Player>
     {
-        public string AnimName => "dashing";
-        public bool CollisionsEnabled => true;
-
         public Dashing(Player entity) : base(entity)
         {
 
@@ -26,12 +23,6 @@ namespace PlatformerFSM
             {
                 entity.StateMachine.SetState(entity.controller.collisions.Below ? "Grounded" : "Airborne");
             }
-
-            else
-            {
-                entity.velocity.y = 0;
-                entity.velocity.x = entity.facing * 20;
-            }
         }
 
         public override void OnEnter()
@@ -39,9 +30,9 @@ namespace PlatformerFSM
             entity.movementSpeed = 0;
 
             entity.LockFacing();
-            entity.LockVelocity();
+            entity.LockVelocity(new Vector2(entity.facing * 20, 0));
 
-            entity.animator.Play(AnimName);
+            entity.animator.Play("dashing");
         }
 
         public override void OnExit()

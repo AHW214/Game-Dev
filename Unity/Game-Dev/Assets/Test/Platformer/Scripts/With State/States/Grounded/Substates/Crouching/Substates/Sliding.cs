@@ -2,11 +2,8 @@
 
 namespace PlatformerFSM
 {
-    public class Sliding : State<Player>, ICoreState
+    public class Sliding : State<Player>
     {
-        public string AnimName => "sliding";
-        public bool CollisionsEnabled => true;
-
         public Sliding(Player entity) : base(entity)
         {
 
@@ -25,7 +22,7 @@ namespace PlatformerFSM
             entity.LockFacing();
 
             entity.velocity.x = entity.facing * 20;
-            entity.animator.Play(AnimName);
+            entity.animator.Play("sliding");
         }
 
         public override void OnExit()

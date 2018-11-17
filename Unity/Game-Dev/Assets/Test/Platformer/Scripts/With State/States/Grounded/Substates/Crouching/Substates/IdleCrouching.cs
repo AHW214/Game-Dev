@@ -3,11 +3,8 @@ using FSMRev3;
 
 namespace PlatformerFSM
 {
-    public class IdleCrouching : State<Player>, ICoreState
+    public class IdleCrouching : State<Player>
     {
-        public string AnimName => "crouching";
-        public bool CollisionsEnabled => true;
-
         public IdleCrouching(Player entity) : base(entity)
         {
 
@@ -23,7 +20,7 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
-            entity.animator.Play(AnimName);          
+            entity.animator.Play("crouching");          
         }
 
         public override void OnExit()

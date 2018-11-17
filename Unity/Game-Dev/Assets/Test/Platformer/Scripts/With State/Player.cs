@@ -31,8 +31,8 @@ namespace PlatformerFSM
 
         internal Vector2 jumpVelocityRange;
 
-        private bool collisionsEnabled = true;
-        private bool velocityLocked = false;
+        internal readonly bool[] velocityLocked = { false, false };
+        private bool collisionsEnabled = true;       
         private bool facingLocked = false;
 
         private float gravity;     
@@ -67,11 +67,8 @@ namespace PlatformerFSM
                 FaceForward();
             }
             
-            if (!velocityLocked)
-            {
-                CalculateVelocity();
-            }           
-
+            CalculateVelocity();
+         
             displacement = velocity * Time.deltaTime;
             controller.DetectCollisions(displacement);
 
@@ -87,10 +84,16 @@ namespace PlatformerFSM
 
         private void CalculateVelocity()
         {
-            float targetVelocityX = input.x * movementSpeed;
-            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, accelerationTime);
-
-            velocity.y += gravity * Time.deltaTime;
+            if (!velocityLocked[0])
+            {
+                float targetVelocityX = input.x * movementSpeed;
+                velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, accelerationTime);
+            }
+            
+            if (!velocityLocked[1])
+            {
+                velocity.y += gravity * Time.deltaTime;
+            }           
         }
 
         private void FaceForward()
@@ -104,9 +107,17 @@ namespace PlatformerFSM
             }
         }
 
+        public void LockVelocity(bool value = true) => velocityLocked[0] = velocityLocked[1] = value;
+        public void LockVelocity(Vector2 value) { LockVelocity(); velocity = value; }
+
+        public void LockVelocityX(bool value = true) => velocityLocked[0] = value;
+        public void LockVelocityY(bool value = true) => velocityLocked[1] = value;
+
+        public void LockVelocityX(float value) { LockVelocityX(); velocity.x = value; }
+        public void LockVelocityY(float value) { LockVelocityY(); velocity.y = value; }
+
         public void EnableCollisions(bool value = true) => collisionsEnabled = value;
-        public void LockVelocity(bool value = true) => velocityLocked = value;
-        public void LockFacing(bool value = true) => facingLocked = value;
+        public void LockFacing(bool value = true) => facingLocked = value;     
     }
 }
 

@@ -2,11 +2,8 @@
 
 namespace PlatformerFSM
 {
-    public class IdleStanding : State<Player>, ICoreState
+    public class IdleStanding : State<Player>
     {
-        public string AnimName => "idle";
-        public bool CollisionsEnabled => true;
-
         public IdleStanding(Player entity) : base(entity)
         {
 
@@ -22,7 +19,7 @@ namespace PlatformerFSM
 
         public override void OnEnter()
         {
-            entity.animator.Play(AnimName);
+            entity.animator.Play("idle");
         }
 
         public override void OnExit()
